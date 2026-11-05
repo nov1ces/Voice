@@ -23,3 +23,6 @@ releases
 reports
 testResults
 /plugins/.idea/workspace.xml
+
+.cxx/
+/signing/

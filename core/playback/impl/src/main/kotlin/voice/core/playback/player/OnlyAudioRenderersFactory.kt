@@ -14,6 +14,11 @@ import dev.zacsweers.metro.Inject
 @Inject
 class OnlyAudioRenderersFactory(context: Context) : DefaultRenderersFactory(context) {
 
+  init {
+    setExtensionRendererMode(EXTENSION_RENDERER_MODE_PREFER)
+    setEnableDecoderFallback(true)
+  }
+
   override fun buildVideoRenderers(
     context: Context,
     extensionRendererMode: Int,

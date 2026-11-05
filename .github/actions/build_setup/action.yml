@@ -24,3 +24,9 @@ runs:
       uses: gradle/actions/setup-gradle@v6
       with:
         cache-read-only: ${{ github.ref_name != github.event.repository.default_branch }}
+    - name: Set up native tools
+      shell: bash
+      run: sdkmanager "ndk;28.2.13676358" "cmake;3.22.1"
+    - name: Build FFmpeg
+      shell: bash
+      run: ./scripts/build_ffmpeg.sh

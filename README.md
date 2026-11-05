@@ -57,3 +57,8 @@ Or [sponsor monthly on GitHub](https://github.com/sponsors/PaulWoitaschek). A on
 ## License
 
 Voice is licensed under [GNU GPLv3](LICENSE.md). By contributing, you agree to license your code under the same terms.
+
+## FFmpeg audio support
+
+This fork uses FFmpeg for software audio decoding.
+See [the FFmpeg guide](docs/ffmpeg.md) for formats, build steps, and checks.

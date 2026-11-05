@@ -74,6 +74,24 @@ internal class MediaAnalyzerTest {
   }
 
   @Test
+  fun aacM4b() {
+    val metadata = assertNotNull(parse("aac.m4b"))
+    assertWithinPercentage(2000L, metadata.duration, 2.0)
+  }
+
+  @Test
+  fun alacM4b() {
+    val metadata = assertNotNull(parse("alac.m4b"))
+    assertWithinPercentage(2000L, metadata.duration, 2.0)
+  }
+
+  @Test
+  fun adts() {
+    val metadata = assertNotNull(parse("aac.adts"))
+    assertWithinPercentage(2000L, metadata.duration, 10.0)
+  }
+
+  @Test
   fun mp3() {
     val metadata = assertNotNull(parse("auphonic_chapters_demo.mp3"))
 

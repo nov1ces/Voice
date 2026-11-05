@@ -2,6 +2,7 @@
 
 Voice is a modular Android audiobook player.
 
+- First, install the native tools and run `./scripts/build_ffmpeg.sh`. See [the FFmpeg guide](docs/ffmpeg.md).
 - Build the app: `./gradlew :app:assembleFreeDebug`.
 - If installing a debug build fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, the installed app was signed with a different key. Never uninstall it to get around this, as that wipes the user's library. Ask the user instead.
 - Local builds take the version code of the newest release tag. If an install fails with `INSTALL_FAILED_VERSION_DOWNGRADE`, run `git fetch --tags` and build again. Over an installed debug build, `adb install -r -d` also works. Otherwise ask the user, never uninstall.

@@ -7,6 +7,8 @@ private val supportedAudioFormats =
   setOf(
     "3gp",
     "aac",
+    "adts",
+    "amr",
     "awb",
     "flac",
     "imy",

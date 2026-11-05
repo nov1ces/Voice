@@ -131,6 +131,8 @@ include(":features:widget")
 
 include(":core:featureflag")
 
+include(":core:ffmpeg")
+
 include(":core:kioskmode")
 
 include(":core:audiobookshelf:api")
