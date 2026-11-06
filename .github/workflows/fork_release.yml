@@ -30,6 +30,7 @@ jobs:
         shell: bash
     env:
       FFMPEG_JOBS: '2'
+      FORK_SIGNING_CERT_SHA256: f9ec60f7dd30e70216dc6d154348736acac3ebf36eba68b9461d985267ef54d1
     steps:
       - uses: actions/checkout@v7
         with:
@@ -144,8 +145,8 @@ jobs:
           expected_certificate=$(keytool -exportcert -keystore signing/signing.keystore \
             -storepass:env STORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | cut -d ' ' -f 1)
           actual_certificate=$(sed -n 's/^.*certificate SHA-256 digest: //p' "$RUNNER_TEMP/apk-signature.txt" | sed -n '1p')
-          if [[ "$actual_certificate" != "$expected_certificate" ]]; then
-            echo "APK certificate does not match the release key." >&2
+          if [[ "$actual_certificate" != "$expected_certificate" || "$actual_certificate" != "$FORK_SIGNING_CERT_SHA256" ]]; then
+            echo "APK certificate does not match the existing fork release key." >&2
             exit 1
           fi
           printf 'APK signing certificate SHA-256: %s\n' "$actual_certificate"
@@ -204,8 +205,9 @@ jobs:
           gh release create "$VERSION_NAME" artifacts/* \
             --target "$GITHUB_SHA" \
             --title "Voice $VERSION_NAME" \
-            --latest \
+            --draft \
             --notes-file .github/ffmpeg_release_notes.md
+          gh release edit "$VERSION_NAME" --draft=false --latest
       - uses: actions/upload-artifact@v7
         if: always()
         with:
