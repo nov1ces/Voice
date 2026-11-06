@@ -2,6 +2,16 @@ package voice.features.playbackScreen.view
 
 import androidx.compose.ui.geometry.Rect
 
+internal fun lyricCenterScrollOffset(
+  itemHeight: Int,
+  viewportStartOffset: Int,
+  viewportEndOffset: Int,
+): Int {
+  val viewportHeight = viewportEndOffset - viewportStartOffset
+  val visibleHeight = itemHeight.coerceIn(0, viewportHeight.coerceAtLeast(0))
+  return -viewportStartOffset - (viewportHeight - visibleHeight) / 2
+}
+
 internal data class LyricGlyph(val bounds: Rect, val rtl: Boolean)
 
 internal fun lyricRevealRects(glyphs: List<LyricGlyph>, progress: Float): List<Rect> {

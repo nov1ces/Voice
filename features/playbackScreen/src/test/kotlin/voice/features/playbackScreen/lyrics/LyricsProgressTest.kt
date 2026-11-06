@@ -5,6 +5,33 @@ import kotlin.test.assertEquals
 
 class LyricsProgressTest {
 
+  @Test
+  fun `ordinary sentence timestamps provide an estimated sweep`() {
+    val lyrics = kotlin.test.assertNotNull(parseLyrics("[00:01.00]Fictional dialogue\n[00:03.00]"))
+    val line = lyrics.lines.single()
+    assertEquals(emptyList(), line.segments)
+    val estimated = line.sweepSegments().single()
+    assertEquals(LyricSegment(1000L, 3000L, 0, line.text.length), estimated)
+    assertEquals(0.5F, lyricSegmentProgress(estimated, 2000L))
+  }
+
+  @Test
+  fun `precise word times take priority over sentence estimates`() {
+    val precise = listOf(LyricSegment(1200L, 1500L, 0, 1), LyricSegment(1500L, 2000L, 1, 2))
+    val line = LyricLine(1000L, "甲乙", 2000L, precise)
+    assertEquals(precise, line.sweepSegments(10000L))
+  }
+
+  @Test
+  fun `the final sentence can use the physical audio duration`() {
+    val line = LyricLine(5000L, "Last fictional sentence")
+    assertEquals(emptyList(), line.sweepSegments())
+    assertEquals(emptyList(), line.sweepSegments(5000L))
+    assertEquals(emptyList(), line.sweepSegments(4000L))
+    assertEquals(listOf(LyricSegment(5000L, 9000L, 0, line.text.length)), line.sweepSegments(9000L))
+    assertEquals(7000L, line.copy(endTimeMs = 7000L).sweepSegments(9000L).single().endTimeMs)
+  }
+
   private val segment = LyricSegment(1000L, 2000L, 0, 2)
 
   @Test

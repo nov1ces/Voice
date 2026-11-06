@@ -1,5 +1,12 @@
 package voice.features.playbackScreen.lyrics
 
+internal fun LyricLine.sweepSegments(fallbackEndTimeMs: Long? = null): List<LyricSegment> {
+  if (segments.isNotEmpty()) return segments
+  val end = endTimeMs ?: fallbackEndTimeMs ?: return emptyList()
+  if (end <= timeMs || text.isBlank()) return emptyList()
+  return listOf(LyricSegment(timeMs, end, 0, text.length))
+}
+
 internal fun lyricSegmentProgress(segment: LyricSegment, positionMs: Long): Float {
   if (positionMs < segment.timeMs) return 0F
   val end = segment.endTimeMs ?: return 1F

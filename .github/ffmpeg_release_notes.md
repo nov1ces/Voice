@@ -1,14 +1,15 @@
 ## What's New
 
-### Word by word lyrics 🎵
+### Karaoke lyrics 🎵
 
-- Follow each word as it fills with the audio. Completed words stay bright until the sentence ends.
+- Ordinary LRC files now sweep across each sentence, using its start and end times.
+- The current sentence stays near the center, including wrapped text and the first and last captions.
+- Very tall paragraphs start at the top, so their beginning stays readable.
 - Set **Word-by-word highlighting** in each book's **Edit** page. Turn it off to highlight whole lines instead.
-- Read SPL timing, sentence endings, translations, and delayed words. Tap a line to jump to its start.
-- Put a matching `.spl` or `.lrc` file beside the audio file. SPL takes priority, with LRC as a fallback.
-- Long episodes keep their scroll position during sentence breaks. The lyrics button appears only after valid lyrics load.
+- Browse freely, then select **Follow playback** to return to the current sentence.
 
-Word highlighting needs word timestamps in the visible lyrics. Ordinary line timing keeps line highlighting.
+SPL word timestamps keep their exact timing. Sentence-only files use an estimated sweep and do not gain new word timestamps.
+Put a matching `.spl` or `.lrc` file beside the audio file. SPL takes priority, with LRC as a fallback.
 The parser follows the [SPL timing standard](https://moriafly.com/standards/spl.html), including its compatibility field rules.
 Files can use UTF-8, UTF-16 with a byte order mark, or GB18030.
 Embedded lyrics and plain text files are not supported.

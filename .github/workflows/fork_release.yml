@@ -6,12 +6,12 @@ on:
       version_name:
         description: Release version name
         required: true
-        default: 1.0.0-ffmpeg.1
+        default: 1.0.0-ffmpeg.5
         type: string
       version_code:
         description: Increasing Android version code
         required: true
-        default: '1'
+        default: '5'
         type: string
 
 concurrency:
@@ -24,7 +24,12 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    env:
+      FFMPEG_JOBS: '2'
     steps:
       - uses: actions/checkout@v7
         with:
@@ -34,10 +39,46 @@ jobs:
           VERSION_NAME: ${{ inputs.version_name }}
           VERSION_CODE: ${{ inputs.version_code }}
         run: |
-          [[ "$GITHUB_REF_NAME" == main ]]
-          [[ "$VERSION_NAME" =~ ^[0-9]+\.[0-9]+\.[0-9]+[-a-zA-Z0-9.]*$ ]]
-          [[ "$VERSION_CODE" =~ ^[1-9][0-9]*$ ]]
-          (( VERSION_CODE <= 2100000000 ))
+          if [[ "$GITHUB_REF" != refs/heads/main ]]; then
+            echo "Dispatch this workflow from main." >&2
+            exit 1
+          fi
+          python3 - <<'PYTHON'
+          import os
+          import re
+
+          version_name = os.environ["VERSION_NAME"]
+          version_code = os.environ["VERSION_CODE"]
+          if len(version_name) > 128 or not re.fullmatch(
+              r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?",
+              version_name,
+          ):
+              raise SystemExit("Invalid release version name.")
+          if not re.fullmatch(r"[1-9][0-9]{0,9}", version_code) or int(version_code) > 2100000000:
+              raise SystemExit("Version code must be between 1 and 2100000000.")
+          PYTHON
+          existing_tag=$(git ls-remote --tags origin "refs/tags/$VERSION_NAME")
+          if [[ -n "$existing_tag" ]]; then
+            echo "The release tag already exists: $VERSION_NAME" >&2
+            exit 1
+          fi
+      - name: Check signing secrets
+        env:
+          GH_SIGNING_KEYSTORE: ${{ secrets.GH_SIGNING_KEYSTORE != '' }}
+          GH_SIGNING_STORE_PASSWORD: ${{ secrets.GH_SIGNING_STORE_PASSWORD != '' }}
+          GH_SIGNING_KEY_ALIAS: ${{ secrets.GH_SIGNING_KEY_ALIAS != '' }}
+          GH_SIGNING_KEY_PASSWORD: ${{ secrets.GH_SIGNING_KEY_PASSWORD != '' }}
+        run: |
+          missing=false
+          for variable in GH_SIGNING_KEYSTORE GH_SIGNING_STORE_PASSWORD GH_SIGNING_KEY_ALIAS GH_SIGNING_KEY_PASSWORD; do
+            if [[ "${!variable}" != true ]]; then
+              echo "Missing signing secret: $variable" >&2
+              missing=true
+            fi
+          done
+          if [[ "$missing" == true ]]; then
+            exit 1
+          fi
       - uses: ./.github/actions/build_setup
       - name: Set up fork signing
         env:
@@ -70,14 +111,77 @@ jobs:
                   output.write(key + "=" + escaped + "\n")
           properties.chmod(0o600)
           PYTHON
+      - name: Run playback tests and app lint
+        env:
+          VERSION_NAME: ${{ inputs.version_name }}
+          VERSION_CODE: ${{ inputs.version_code }}
+        run: |
+          ./gradlew :core:scanner:testDebugUnitTest :core:playback:impl:testDebugUnitTest \
+            :features:playbackScreen:testDebugUnitTest :app:lintFreeRelease \
+            -Pvoice.versionName="$VERSION_NAME" -Pvoice.versionCode="$VERSION_CODE" \
+            --no-configuration-cache -Dorg.gradle.unsafe.isolated-projects=false --max-workers=2 \
+            -Dorg.gradle.jvmargs='-Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -XX:MaxMetaspaceSize=1g -Xms256m -Xmx4g'
       - name: Build signed APK
         env:
           VERSION_NAME: ${{ inputs.version_name }}
           VERSION_CODE: ${{ inputs.version_code }}
         run: |
-          ./gradlew :core:scanner:testDebugUnitTest :core:playback:impl:testDebugUnitTest :app:assembleFreeRelease \
+          ./gradlew :app:assembleFreeRelease \
             -Pvoice.versionName="$VERSION_NAME" \
-            -Pvoice.versionCode="$VERSION_CODE"
+            -Pvoice.versionCode="$VERSION_CODE" \
+            --no-configuration-cache -Dorg.gradle.unsafe.isolated-projects=false --max-workers=2 \
+            -Dorg.gradle.jvmargs='-Dfile.encoding=UTF-8 -XX:+ExitOnOutOfMemoryError -XX:MaxMetaspaceSize=1g -Xms256m -Xmx4g'
+      - name: Verify signed APK
+        env:
+          VERSION_NAME: ${{ inputs.version_name }}
+          VERSION_CODE: ${{ inputs.version_code }}
+          STORE_PASSWORD: ${{ secrets.GH_SIGNING_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.GH_SIGNING_KEY_ALIAS }}
+        run: |
+          apk=app/build/outputs/apk/free/release/app-free-release.apk
+          build_tools=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
+          "$build_tools/apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/apk-signature.txt"
+          expected_certificate=$(keytool -exportcert -keystore signing/signing.keystore \
+            -storepass:env STORE_PASSWORD -alias "$KEY_ALIAS" | sha256sum | cut -d ' ' -f 1)
+          actual_certificate=$(sed -n 's/^.*certificate SHA-256 digest: //p' "$RUNNER_TEMP/apk-signature.txt" | sed -n '1p')
+          if [[ "$actual_certificate" != "$expected_certificate" ]]; then
+            echo "APK certificate does not match the release key." >&2
+            exit 1
+          fi
+          printf 'APK signing certificate SHA-256: %s\n' "$actual_certificate"
+          "$build_tools/zipalign" -c -P 16 -v 4 "$apk"
+          python3 - <<'PYTHON'
+          import json
+          import os
+          from pathlib import Path
+          import zipfile
+
+          output = Path("app/build/outputs/apk/free/release")
+          metadata = json.loads((output / "output-metadata.json").read_text())
+          elements = metadata["elements"]
+          if len(elements) != 1:
+              raise SystemExit("Expected one universal APK.")
+          element = elements[0]
+          if (
+              element["outputFile"] != "app-free-release.apk"
+              or element["versionName"] != os.environ["VERSION_NAME"]
+              or element["versionCode"] != int(os.environ["VERSION_CODE"])
+          ):
+              raise SystemExit("APK version does not match the release inputs.")
+          expected_abis = {"armeabi-v7a", "arm64-v8a", "x86", "x86_64"}
+          with zipfile.ZipFile(output / element["outputFile"]) as apk:
+              names = set(apk.namelist())
+              actual_abis = {name.split("/")[1] for name in names if name.startswith("lib/") and name.endswith(".so")}
+              if actual_abis != expected_abis:
+                  raise SystemExit("APK must contain exactly the four supported ABIs.")
+              for abi in expected_abis:
+                  library = f"lib/{abi}/libffmpegJNI.so"
+                  if library not in names or apk.getinfo(library).file_size == 0:
+                      raise SystemExit(f"Missing FFmpeg library: {abi}")
+                  if apk.getinfo(library).compress_type != zipfile.ZIP_STORED:
+                      raise SystemExit(f"FFmpeg library must be uncompressed: {abi}")
+          print("Verified APK version and all four FFmpeg ABIs.")
+          PYTHON
       - name: Prepare release files
         env:
           VERSION_NAME: ${{ inputs.version_name }}
@@ -85,16 +189,22 @@ jobs:
           mkdir -p artifacts
           cp app/build/outputs/apk/free/release/app-free-release.apk "artifacts/Voice-$VERSION_NAME.apk"
           cp core/ffmpeg/build/ffmpeg/ffmpeg-6.1.6.tar.xz artifacts/
-          git archive --format=tar.gz --prefix=Voice/ -o artifacts/Voice-source.tar.gz HEAD
+          git archive --format=tar.gz --prefix=Voice/ -o artifacts/Voice-source.tar.gz "$GITHUB_SHA"
           (cd artifacts && sha256sum *.apk *.tar.* > SHA256SUMS)
       - name: Publish fork release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION_NAME: ${{ inputs.version_name }}
         run: |
-          gh release create "ffmpeg-$VERSION_NAME" artifacts/* \
+          existing_tag=$(git ls-remote --tags origin "refs/tags/$VERSION_NAME")
+          if [[ -n "$existing_tag" ]]; then
+            echo "The release tag already exists: $VERSION_NAME" >&2
+            exit 1
+          fi
+          gh release create "$VERSION_NAME" artifacts/* \
             --target "$GITHUB_SHA" \
             --title "Voice $VERSION_NAME" \
+            --latest \
             --notes-file .github/ffmpeg_release_notes.md
       - uses: actions/upload-artifact@v7
         if: always()

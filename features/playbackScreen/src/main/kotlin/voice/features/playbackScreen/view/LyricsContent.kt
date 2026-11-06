@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -94,16 +95,31 @@ internal fun LyricsContent(
       derivedStateOf { lyrics.followLineIndex(position.value) }
     }
   val onFollow = remember(lyrics) { { follow = true } }
-  val viewportHeight by remember { derivedStateOf { listState.layoutInfo.viewportSize.height } }
-  LaunchedEffect(lyrics, followIndex, follow, viewportHeight) {
-    if (follow && lyrics.lines.isNotEmpty() && viewportHeight > 0) {
+  LaunchedEffect(lyrics, followIndex, follow) {
+    if (follow && lyrics.lines.isNotEmpty()) {
       val targetIndex = followIndex.coerceAtLeast(0)
-      val offset = -(viewportHeight * 0.28F).toInt()
-      if (abs(targetIndex - listState.firstVisibleItemIndex) > 30) {
-        listState.scrollToItem(targetIndex, offset)
-      } else {
-        listState.animateScrollToItem(targetIndex, offset)
+      snapshotFlow {
+        val layout = listState.layoutInfo
+        Triple(
+          layout.viewportStartOffset,
+          layout.viewportEndOffset,
+          layout.visibleItemsInfo.firstOrNull { it.index == targetIndex }?.size,
+        )
       }
+        .collect { (start, end, height) ->
+          if (end > start) {
+            if (height == null) {
+              listState.scrollToItem(targetIndex)
+            } else {
+              val offset = lyricCenterScrollOffset(height, start, end)
+              if (abs(targetIndex - listState.firstVisibleItemIndex) > 30) {
+                listState.scrollToItem(targetIndex, offset)
+              } else {
+                listState.animateScrollToItem(targetIndex, offset)
+              }
+            }
+          }
+        }
     }
   }
   BoxWithConstraints(
@@ -141,7 +157,7 @@ internal fun LyricsContent(
         LazyColumn(
           state = listState,
           modifier = Modifier.fillMaxSize().nestedScroll(manualScroll),
-          contentPadding = PaddingValues(top = maxHeight * 0.25F, bottom = maxHeight * 0.6F),
+          contentPadding = PaddingValues(vertical = maxHeight * 0.5F),
           verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
           itemsIndexed(lyrics.lines, key = { index, _ -> index }) { index, line ->
@@ -152,6 +168,8 @@ internal fun LyricsContent(
               onFollow = onFollow,
               onLineClick = onLineClick,
               continuousLyrics = viewState.continuousLyrics,
+              fallbackEndTimeMs =
+                lyrics.lines.getOrNull(index + 1)?.timeMs ?: viewState.lyricsDurationMs,
             )
           }
         }

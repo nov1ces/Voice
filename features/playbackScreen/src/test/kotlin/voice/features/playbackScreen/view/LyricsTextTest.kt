@@ -34,6 +34,59 @@ class LyricsTextTest {
   @get:Rule val compose = createComposeRule()
 
   @Test
+  fun `ordinary LRC sentences fill continuously without word timestamps`() {
+    val line = assertNotNull(parseLyrics("[00:00.00]甲乙\n[00:02.00]")).lines.single()
+    assertEquals(emptyList(), line.segments)
+    val position = mutableLongStateOf(0L)
+    compose.setContent {
+      VoiceTheme {
+        Box(Modifier.requiredWidth(240.dp)) {
+          LyricText(line, true, position, {}, {}, Modifier.fillMaxWidth().testTag(TEXT))
+        }
+      }
+    }
+    val node = compose.onNodeWithTag(TEXT)
+    val before = node.captureToImage()
+    compose.runOnIdle { position.longValue = 500L }
+    val partial = node.captureToImage()
+    compose.runOnIdle { position.longValue = 1000L }
+    val halfway = node.captureToImage()
+    assertTrue(differentPixels(before, partial) > 0)
+    assertTrue(differentPixels(partial, halfway) > 0)
+    assertEquals(before.width, halfway.width)
+    assertEquals(before.height, halfway.height)
+  }
+
+  @Test
+  fun `late audio duration updates the final sentence sweep without changing its layout`() {
+    val line = assertNotNull(parseLyrics("[00:05.00]尾句")).lines.single()
+    val position = mutableLongStateOf(6000L)
+    val duration = mutableLongStateOf(7000L)
+    compose.setContent {
+      VoiceTheme {
+        Box(Modifier.requiredWidth(240.dp)) {
+          LyricText(
+            line,
+            true,
+            position,
+            {},
+            {},
+            Modifier.fillMaxWidth().testTag(TEXT),
+            fallbackEndTimeMs = duration.longValue,
+          )
+        }
+      }
+    }
+    val node = compose.onNodeWithTag(TEXT)
+    val before = node.captureToImage()
+    compose.runOnIdle { duration.longValue = 9000L }
+    val after = node.captureToImage()
+    assertTrue(differentPixels(before, after) > 0)
+    assertEquals(before.width, after.width)
+    assertEquals(before.height, after.height)
+  }
+
+  @Test
   fun `words fill partway without moving and completed words stay bright`() {
     val line = assertNotNull(parseLyrics("[00:00.000]甲<00:01.000>乙[00:02.000]")).lines.single()
     val position = mutableLongStateOf(0L)

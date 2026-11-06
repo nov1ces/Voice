@@ -7,6 +7,20 @@ import kotlin.test.assertEquals
 class LyricsTextGeometryTest {
 
   @Test
+  fun `sentence blocks center using their measured height and content padding`() {
+    assertEquals(50, lyricCenterScrollOffset(100, -300, 300))
+    assertEquals(120, lyricCenterScrollOffset(240, -300, 300))
+    assertEquals(-250, lyricCenterScrollOffset(100, 0, 600))
+    assertEquals(-150, lyricCenterScrollOffset(100, -50, 450))
+  }
+
+  @Test
+  fun `oversized sentence blocks keep their beginning at the viewport top`() {
+    assertEquals(300, lyricCenterScrollOffset(800, -300, 300))
+    assertEquals(0, lyricCenterScrollOffset(800, 0, 600))
+  }
+
+  @Test
   fun `a partially filled Chinese glyph reveals from the left`() {
     val glyphs = listOf(LyricGlyph(Rect(0F, 0F, 20F, 30F), false))
     assertEquals(listOf(Rect(0F, 0F, 10F, 30F)), lyricRevealRects(glyphs, 0.5F))

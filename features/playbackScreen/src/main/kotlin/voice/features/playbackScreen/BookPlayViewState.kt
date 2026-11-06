@@ -31,6 +31,7 @@ data class BookPlayViewState(
   val lyricsChapterId: ChapterId? = null,
   val lyricsPositionMs: Long = 0L,
   val continuousLyrics: Boolean = true,
+  val lyricsDurationMs: Long? = null,
 ) {
 
   /**

@@ -465,6 +465,20 @@ class BookPlayViewModelTest {
   }
 
   @Test
+  fun `lyric duration uses the audio file instead of the current chapter mark`() = scope.runTest {
+    val current = book()
+    val model = viewModel(book = current)
+    backgroundScope
+      .launchMolecule(RecompositionMode.Immediate) { model.viewState() }
+      .test {
+        assertNull(awaitItem())
+        val state = awaitItem()!!
+        assertEquals(current.currentChapter.duration, state.lyricsDurationMs)
+        kotlin.test.assertTrue(state.lyricsDurationMs != state.duration.inWholeMilliseconds)
+      }
+  }
+
+  @Test
   fun `viewState exposes progress through the whole book`() = scope.runTest {
     val viewModel = viewModel()
 

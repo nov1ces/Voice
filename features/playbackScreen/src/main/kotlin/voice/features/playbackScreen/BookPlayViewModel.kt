@@ -180,6 +180,7 @@ class BookPlayViewModel(
       lyricsChapterId = book.currentChapter.id,
       lyricsPositionMs = book.content.positionInChapter,
       continuousLyrics = book.custom.continuousLyrics,
+      lyricsDurationMs = book.currentChapter.duration.takeIf { it > 0L },
     )
   }
 

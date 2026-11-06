@@ -34,6 +34,7 @@ import voice.features.playbackScreen.lyrics.LyricSegment
 import voice.features.playbackScreen.lyrics.LyricsDocument
 import voice.features.playbackScreen.lyrics.interpolatedLyricsPosition
 import voice.features.playbackScreen.lyrics.lyricSegmentProgress
+import voice.features.playbackScreen.lyrics.sweepSegments
 
 @Composable
 internal fun rememberLyricsPosition(
@@ -48,7 +49,7 @@ internal fun rememberLyricsPosition(
     remember(lyrics, samplePositionMs, playing, speed, continuousLyrics) {
       PositionSample(samplePositionMs, System.nanoTime(), playing, speed)
     }
-  val animate = remember(lyrics) { lyrics.lines.any { it.segments.isNotEmpty() } }
+  val animate = remember(lyrics) { lyrics.lines.isNotEmpty() }
   val enabled = animationsEnabled() && continuousLyrics
   LaunchedEffect(sample, animate, enabled) {
     fun currentPosition(): Long =
@@ -80,18 +81,22 @@ internal fun LyricText(
   onLineClick: (Long) -> Unit,
   modifier: Modifier = Modifier,
   continuousLyrics: Boolean = true,
+  fallbackEndTimeMs: Long? = null,
 ) {
   val colors = MaterialTheme.colorScheme
-  val drawing = remember(line) { mutableStateOf<LyricDrawing?>(null) }
-  val sentenceHighlight = active && (!continuousLyrics || line.segments.isEmpty())
+  val segments = remember(line, fallbackEndTimeMs) { line.sweepSegments(fallbackEndTimeMs) }
+  val layout = remember(line.text) { mutableStateOf<TextLayoutResult?>(null) }
+  val drawing =
+    remember(layout.value, line.text, segments) {
+      layout.value?.let { LyricDrawing(it, line.text, segments) }
+    }
+  val sentenceHighlight = active && (!continuousLyrics || segments.isEmpty())
   Text(
     text = line.text.ifBlank { "\u00a0" },
     style = MaterialTheme.typography.headlineMedium.bookText(),
     fontWeight = if (sentenceHighlight) FontWeight.Bold else FontWeight.Medium,
     color = if (sentenceHighlight) colors.onSurface else colors.onSurfaceVariant,
-    onTextLayout = { layout ->
-      drawing.value = LyricDrawing(layout, line)
-    },
+    onTextLayout = { layout.value = it },
     modifier =
       modifier
         .fillMaxWidth()
@@ -103,8 +108,8 @@ internal fun LyricText(
         .padding(vertical = 8.dp)
         .drawWithContent {
           drawContent()
-          if (continuousLyrics && active && line.segments.isNotEmpty()) {
-            val value = drawing.value
+          if (continuousLyrics && active && segments.isNotEmpty()) {
+            val value = drawing
             if (value != null) {
               val now = position.value
               if (now >= line.timeMs && (line.endTimeMs == null || now < line.endTimeMs)) {
@@ -127,10 +132,13 @@ internal fun LyricText(
   )
 }
 
-private fun segmentDrawings(line: LyricLine, layout: TextLayoutResult): List<SegmentDrawing> {
-  if (line.segments.isEmpty()) return emptyList()
-  val characters = BreakIterator.getCharacterInstance(Locale.ROOT).apply { setText(line.text) }
-  return line.segments.map { segment ->
+private fun segmentDrawings(
+  text: String,
+  segments: List<LyricSegment>,
+  layout: TextLayoutResult,
+): List<SegmentDrawing> {
+  val characters = BreakIterator.getCharacterInstance(Locale.ROOT).apply { setText(text) }
+  return segments.map { segment ->
     val glyphs = mutableListOf<LyricGlyph>()
     var offset = segment.startIndex
     while (offset < segment.endIndex) {
@@ -171,10 +179,14 @@ private data class PositionSample(
   val speed: Float,
 )
 
-private class LyricDrawing(val layout: TextLayoutResult, line: LyricLine) {
+private class LyricDrawing(
+  val layout: TextLayoutResult,
+  text: String,
+  timings: List<LyricSegment>,
+) {
   val segments: List<SegmentDrawing> by
     lazy(LazyThreadSafetyMode.NONE) {
-      segmentDrawings(line, layout)
+      segmentDrawings(text, timings, layout)
     }
 }
 

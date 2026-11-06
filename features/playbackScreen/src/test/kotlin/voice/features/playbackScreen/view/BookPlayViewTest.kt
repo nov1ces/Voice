@@ -46,6 +46,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 import voice.core.data.BookId
 import voice.core.data.ChapterId
 import voice.core.strings.R
@@ -174,6 +175,75 @@ class BookPlayViewTest {
     compose.onNodeWithText("次句").assertIsDisplayed().assertIsSelected()
     compose.onNodeWithText("次句").performClick()
     compose.runOnIdle { assertEquals(10000L, state.lyricsPositionMs) }
+  }
+
+  @Test
+  @GraphicsMode(GraphicsMode.Mode.NATIVE)
+  fun `following centers short and wrapped sentences and keeps tall beginnings readable`() {
+    val paragraph = "A lantern moves beside a quiet river while the wind rests. ".repeat(4)
+    val tallParagraph =
+      "The path continues beyond the garden and returns beside the old bridge. ".repeat(30)
+    val lyrics =
+      LyricsDocument(
+        listOf(
+          LyricLine(1000L, "Opening sentence", 2000L),
+          LyricLine(3000L, paragraph, 4000L),
+          LyricLine(4000L, tallParagraph, 4500L),
+          LyricLine(5000L, "Final sentence", 6000L),
+        ),
+      )
+    var window by mutableStateOf(DpSize(412.dp, 915.dp))
+    var fontScale by mutableFloatStateOf(1F)
+    var state by mutableStateOf(viewState.copy(playing = false, lyricsPositionMs = 1000L))
+    compose.setContent {
+      CompositionLocalProvider(
+        LocalDensity provides Density(LocalDensity.current.density, fontScale),
+      ) {
+        VoiceTheme {
+          Box(Modifier.requiredSize(window)) {
+            LyricsContent(
+              lyrics = lyrics,
+              viewState = state,
+              bookId = BookId("book"),
+              clock = { 0F },
+              contentPadding = androidx.compose.foundation.layout.PaddingValues(),
+              onLineClick = { state = state.copy(lyricsPositionMs = it) },
+              onSeek = {},
+              onPlayClick = {},
+              onRewindClick = {},
+              onFastForwardClick = {},
+            )
+          }
+        }
+      }
+    }
+
+    fun assertCentered(text: String) {
+      val viewport = compose.onNode(hasScrollAction()).getBoundsInRoot()
+      val row = compose.onNodeWithText(text).getBoundsInRoot()
+      val delta =
+        (row.top.value + row.bottom.value - viewport.top.value - viewport.bottom.value) / 2F
+      assertTrue(kotlin.math.abs(delta) <= 2F)
+    }
+
+    assertCentered("Opening sentence")
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 3000L) }
+    assertCentered(paragraph)
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 5000L) }
+    assertCentered("Final sentence")
+    compose.runOnIdle {
+      window = DpSize(640.dp, 360.dp)
+      fontScale = 2F
+    }
+    assertCentered("Final sentence")
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 4000L) }
+    val viewport = compose.onNode(hasScrollAction()).getBoundsInRoot()
+    val coordinates =
+      compose.onNodeWithText(tallParagraph).fetchSemanticsNode().layoutInfo.coordinates
+    val height = with(compose.density) { coordinates.size.height.toDp().value }
+    assertTrue(height > viewport.bottom.value - viewport.top.value)
+    val top = with(compose.density) { coordinates.positionInRoot().y.toDp().value }
+    assertTrue(top >= viewport.top.value && top <= viewport.top.value + 16F)
   }
 
   @Test
