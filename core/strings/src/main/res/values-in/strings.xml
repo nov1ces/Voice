@@ -74,6 +74,8 @@
     <string name="book.edit.cover.file">Sampul dari penyimpanan</string>
     <string name="book.edit.cover.internet">Sampul dari Internet</string>
     <string name="book.edit.part.label">Bagian</string>
+    <string name="book.continuous_lyrics">Sorot kata demi kata</string>
+    <string name="book.continuous_lyrics.description">Sorot setiap kata saat Anda mendengarkan. Matikan untuk menyorot seluruh baris.</string>
     <string name="book.edit.series.label">Seri</string>
     <string name="book.edit.server.failed">Tidak dapat menyimpan ke server Anda. Coba lagi.</string>
     <string name="book.edit.server.not_allowed">Akun Anda di server tidak dapat mengubah buku.</string>

@@ -62,16 +62,17 @@ class LyricsDocumentTest {
   }
 
   @Test
-  fun `bilingual lines share one cue and empty cues preserve pauses`() {
+  fun `bilingual lines share one cue and empty timestamps end the sentence`() {
     val lyrics =
       assertNotNull(
         parseLyrics("[00:01.00]你好\n[00:01.00]Hello\n[00:02.00]\n[00:04.00]下一句"),
       )
 
-    assertEquals(3, lyrics.lines.size)
+    assertEquals(2, lyrics.lines.size)
     assertEquals("你好\nHello", lyrics.lines.first().text)
-    assertEquals("", lyrics.lines[1].text)
-    assertEquals(1, lyrics.currentLineIndex(3000L))
+    assertEquals(2000L, lyrics.lines.first().endTimeMs)
+    assertEquals(-1, lyrics.currentLineIndex(3000L))
+    assertEquals(0, lyrics.followLineIndex(3000L))
     assertNull(parseLyrics("[00:00.00]\n[00:02.00] "))
   }
 

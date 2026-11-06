@@ -45,6 +45,7 @@ class EditBookViewModel(
         cover = book.coverUrl,
         series = book.series.orEmpty(),
         part = book.part.orEmpty(),
+        continuousLyrics = book.custom.continuousLyrics,
         allSeries = seriesOfOtherBooks(bookId),
       )
   }
@@ -84,6 +85,10 @@ class EditBookViewModel(
     _state.value = _state.value?.copy(part = part)
   }
 
+  internal fun onContinuousLyricsChange(enabled: Boolean) {
+    _state.value = _state.value?.copy(continuousLyrics = enabled)
+  }
+
   internal fun onConfirm() {
     val state = _state.value ?: return
     check(state.confirmButtonEnabled)
@@ -102,6 +107,8 @@ class EditBookViewModel(
           edited = edited.copy(series = state.series.trim().ifEmpty { null })
         if (state.part != state.initialPart)
           edited = edited.copy(part = state.part.trim().ifEmpty { null })
+        if (state.continuousLyrics != state.initialContinuousLyrics)
+          edited = edited.copy(continuousLyrics = state.continuousLyrics)
         edited
       }
     }
@@ -119,13 +126,16 @@ class EditBookViewModel(
         series = state.series.takeIf { seriesChanged },
         part = state.part.takeIf { seriesChanged },
       )
-    if (edit == ServerBookEdit()) {
-      _state.value = state.copy(serverResult = ServerEdit.Saved)
-      return
-    }
     _state.value = state.copy(saving = true, serverResult = null)
     scope.launch {
-      val result = serverLibrary.updateBook(state.bookId, edit)
+      val result =
+        if (edit == ServerBookEdit()) ServerEdit.Saved
+        else serverLibrary.updateBook(state.bookId, edit)
+      if (result == ServerEdit.Saved && state.continuousLyrics != state.initialContinuousLyrics) {
+        repo.updateCustomMetadata(state.bookId) {
+          it.copy(continuousLyrics = state.continuousLyrics)
+        }
+      }
       _state.value = _state.value?.copy(saving = false, serverResult = result)
     }
   }

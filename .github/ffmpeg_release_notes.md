@@ -1,17 +1,18 @@
 ## What's New
 
-### Synced lyrics 🎵
+### Word by word lyrics 🎵
 
-- Put an LRC file beside the audio file, with the same name, to read along while listening.
-- Open a large-text view with the current line highlighted. Tap a line to jump to that point.
-- Browse the lyrics at your own pace, then select **Follow playback** to return to the current line.
-- Long episodes show only the lines near the screen. Compact windows keep the lyrics and playback controls visible.
-- The lyrics button appears only after valid lyrics load. Switching audio files clears the previous lyrics.
+- Follow each word as it fills with the audio. Completed words stay bright until the sentence ends.
+- Set **Word-by-word highlighting** in each book's **Edit** page. Turn it off to highlight whole lines instead.
+- Read SPL timing, sentence endings, translations, and delayed words. Tap a line to jump to its start.
+- Put a matching `.spl` or `.lrc` file beside the audio file. SPL takes priority, with LRC as a fallback.
+- Long episodes keep their scroll position during sentence breaks. The lyrics button appears only after valid lyrics load.
 
-LRC files can use UTF-8, UTF-16 with a byte order mark, or GB18030.
-Multiple timestamps, timing offsets, and translated lines at the same time are supported.
+Word highlighting needs word timestamps in the visible lyrics. Ordinary line timing keeps line highlighting.
+The parser follows the [SPL timing standard](https://moriafly.com/standards/spl.html), including its compatibility field rules.
+Files can use UTF-8, UTF-16 with a byte order mark, or GB18030.
 Embedded lyrics and plain text files are not supported.
-The limits are 32 MiB per file, 250,000 timestamps, and 4,096 characters per cue.
+The limits are 32 MiB per file, 250,000 cues, and 4,096 characters per cue.
 
 ### Audio playback
 

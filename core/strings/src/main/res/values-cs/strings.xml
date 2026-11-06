@@ -83,6 +83,8 @@
     <string name="book.edit.cover.file">Obal ze souborového systému</string>
     <string name="book.edit.cover.internet">Obal z internetu</string>
     <string name="book.edit.part.label">Díl</string>
+    <string name="book.continuous_lyrics">Zvýrazňování po slovech</string>
+    <string name="book.continuous_lyrics.description">Při poslechu zvýrazňuje jednotlivá slova. Po vypnutí zvýrazňuje celé řádky.</string>
     <string name="book.edit.series.label">Série</string>
     <string name="book.edit.server.failed">Uložení na váš server se nepodařilo. Zkuste to znovu.</string>
     <string name="book.edit.server.not_allowed">Váš účet na serveru nemůže měnit knihy.</string>

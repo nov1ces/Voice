@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Dosyalardan kapak</string>
     <string name="book.edit.cover.internet">İnternetten kitap kapağı</string>
     <string name="book.edit.part.label">Cilt</string>
+    <string name="book.continuous_lyrics">Kelime kelime vurgulama</string>
+    <string name="book.continuous_lyrics.description">Dinlerken her kelimeyi vurgular. Tüm satırları vurgulamak için kapatın.</string>
     <string name="book.edit.series.label">Seri</string>
     <string name="book.edit.server.failed">Sunucunuza kaydedilemedi. Tekrar deneyin.</string>
     <string name="book.edit.server.not_allowed">Sunucudaki hesabınız kitapları değiştiremez.</string>

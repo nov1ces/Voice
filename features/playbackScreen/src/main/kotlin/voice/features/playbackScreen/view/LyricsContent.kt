@@ -2,7 +2,6 @@
 
 package voice.features.playbackScreen.view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -39,9 +38,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.selected
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlin.math.abs
@@ -72,19 +68,36 @@ internal fun LyricsContent(
   var follow by remember(lyrics) { mutableStateOf(true) }
   val dragged by listState.interactionSource.collectIsDraggedAsState()
   LaunchedEffect(dragged) { if (dragged) follow = false }
-  val manualScroll = remember {
-    object : NestedScrollConnection {
-      override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-        if (source == NestedScrollSource.UserInput) follow = false
-        return Offset.Zero
+  val manualScroll =
+    remember(lyrics) {
+      object : NestedScrollConnection {
+        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+          if (source == NestedScrollSource.UserInput) follow = false
+          return Offset.Zero
+        }
       }
     }
-  }
-  val activeIndex = lyrics.currentLineIndex(viewState.lyricsPositionMs)
+  val position =
+    rememberLyricsPosition(
+      lyrics,
+      viewState.lyricsPositionMs,
+      viewState.playing,
+      viewState.playbackSpeed,
+      continuousLyrics = viewState.continuousLyrics,
+    )
+  val activeIndex by
+    remember(lyrics, position) {
+      derivedStateOf { lyrics.currentLineIndex(position.value) }
+    }
+  val followIndex by
+    remember(lyrics, position) {
+      derivedStateOf { lyrics.followLineIndex(position.value) }
+    }
+  val onFollow = remember(lyrics) { { follow = true } }
   val viewportHeight by remember { derivedStateOf { listState.layoutInfo.viewportSize.height } }
-  LaunchedEffect(lyrics, activeIndex, follow, viewportHeight) {
+  LaunchedEffect(lyrics, followIndex, follow, viewportHeight) {
     if (follow && lyrics.lines.isNotEmpty() && viewportHeight > 0) {
-      val targetIndex = activeIndex.coerceAtLeast(0)
+      val targetIndex = followIndex.coerceAtLeast(0)
       val offset = -(viewportHeight * 0.28F).toInt()
       if (abs(targetIndex - listState.firstVisibleItemIndex) > 30) {
         listState.scrollToItem(targetIndex, offset)
@@ -132,21 +145,13 @@ internal fun LyricsContent(
           verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
           itemsIndexed(lyrics.lines, key = { index, _ -> index }) { index, line ->
-            Text(
-              text = line.text.ifBlank { "\u00a0" },
-              style = MaterialTheme.typography.headlineMedium.bookText(),
-              fontWeight = if (index == activeIndex) FontWeight.Bold else FontWeight.Medium,
-              color =
-                if (index == activeIndex) MaterialTheme.colorScheme.onSurface
-                else MaterialTheme.colorScheme.onSurfaceVariant,
-              modifier =
-                Modifier.fillMaxWidth()
-                  .semantics { selected = index == activeIndex }
-                  .clickable {
-                    follow = true
-                    onLineClick(line.timeMs)
-                  }
-                  .padding(vertical = 8.dp),
+            LyricText(
+              line = line,
+              active = index == activeIndex,
+              position = position,
+              onFollow = onFollow,
+              onLineClick = onLineClick,
+              continuousLyrics = viewState.continuousLyrics,
             )
           }
         }

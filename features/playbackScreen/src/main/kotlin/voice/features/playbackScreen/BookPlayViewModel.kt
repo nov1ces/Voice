@@ -179,6 +179,7 @@ class BookPlayViewModel(
       unavailable = book.id in unavailableBooks,
       lyricsChapterId = book.currentChapter.id,
       lyricsPositionMs = book.content.positionInChapter,
+      continuousLyrics = book.custom.continuousLyrics,
     )
   }
 

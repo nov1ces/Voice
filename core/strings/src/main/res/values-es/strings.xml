@@ -80,6 +80,8 @@
     <string name="book.edit.cover.file">Portada desde el sistema de archivos</string>
     <string name="book.edit.cover.internet">Portada desde Internet</string>
     <string name="book.edit.part.label">Parte</string>
+    <string name="book.continuous_lyrics">Resaltado palabra por palabra</string>
+    <string name="book.continuous_lyrics.description">Resalta cada palabra mientras escuchas. Desactívalo para resaltar líneas completas.</string>
     <string name="book.edit.series.label">Serie</string>
     <string name="book.edit.server.failed">No se pudo guardar en tu servidor. Inténtalo de nuevo.</string>
     <string name="book.edit.server.not_allowed">Tu cuenta del servidor no puede cambiar libros.</string>

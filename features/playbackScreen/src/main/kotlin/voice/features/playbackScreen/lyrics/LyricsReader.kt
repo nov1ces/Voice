@@ -22,28 +22,18 @@ internal class LyricsReader(private val context: Context) {
     withContext(Dispatchers.IO) {
       try {
         val audio = chapterId.toUri()
-        val lyrics =
+        val candidates =
           when (audio.scheme) {
             "file" -> findFile(audio)
             "content" -> findDocument(bookId.toUri(), audio)
-            else -> null
-          } ?: return@withContext null
-        val bytes =
-          context.contentResolver.openInputStream(lyrics)?.use { input ->
-            val output = ByteArrayOutputStream()
-            val buffer = ByteArray(8192)
-            while (true) {
-              currentCoroutineContext().ensureActive()
-              val count = input.read(buffer)
-              if (count < 0) break
-              if (output.size() > MAX_LYRICS_BYTES - count) return@withContext null
-              output.write(buffer, 0, count)
-            }
-            output.toByteArray()
-          } ?: return@withContext null
-        currentCoroutineContext().ensureActive()
-        val coroutineContext = currentCoroutineContext()
-        parseLyrics(decodeLyrics(bytes)) { coroutineContext.ensureActive() }
+            else -> emptyList()
+          }
+        for (lyrics in candidates) {
+          readCandidate(lyrics)?.let {
+            return@withContext it
+          }
+        }
+        null
       } catch (cancelled: CancellationException) {
         throw cancelled
       } catch (_: Exception) {
@@ -51,19 +41,41 @@ internal class LyricsReader(private val context: Context) {
       }
     }
 
-  private fun findFile(audio: Uri): Uri? {
-    val file = File(audio.path ?: return null)
-    val expected = file.nameWithoutExtension + ".lrc"
-    return file.parentFile
-      ?.listFiles()
-      ?.firstOrNull {
-        it.isFile && it.name.equals(expected, ignoreCase = true)
-      }
-      ?.let { Uri.fromFile(it) }
+  private suspend fun readCandidate(lyrics: Uri): LyricsDocument? {
+    return try {
+      val bytes =
+        context.contentResolver.openInputStream(lyrics)?.use { input ->
+          val output = ByteArrayOutputStream()
+          val buffer = ByteArray(8192)
+          while (true) {
+            currentCoroutineContext().ensureActive()
+            val count = input.read(buffer)
+            if (count < 0) break
+            if (output.size() > MAX_LYRICS_BYTES - count) return null
+            output.write(buffer, 0, count)
+          }
+          output.toByteArray()
+        } ?: return null
+      currentCoroutineContext().ensureActive()
+      val coroutineContext = currentCoroutineContext()
+      parseLyrics(decodeLyrics(bytes)) { coroutineContext.ensureActive() }
+    } catch (cancelled: CancellationException) {
+      throw cancelled
+    } catch (_: Exception) {
+      null
+    }
   }
 
-  private suspend fun findDocument(book: Uri, audio: Uri): Uri? {
-    if (!DocumentsContract.isTreeUri(audio)) return null
+  private fun findFile(audio: Uri): List<Uri> {
+    val file = File(audio.path ?: return emptyList())
+    val files = file.parentFile?.listFiles()?.filter { it.isFile } ?: return emptyList()
+    return matchingNames(file.name).flatMap { expected ->
+      files.filter { it.name.equals(expected, ignoreCase = true) }.map { Uri.fromFile(it) }
+    }
+  }
+
+  private suspend fun findDocument(book: Uri, audio: Uri): List<Uri> {
+    if (!DocumentsContract.isTreeUri(audio)) return emptyList()
     val audioId = DocumentsContract.getDocumentId(audio)
     // Some providers use paths as IDs. Verify the parent before using this fast path.
     if ('/' in audioId) {
@@ -111,7 +123,7 @@ internal class LyricsReader(private val context: Context) {
           pending.add(DocumentsContract.buildDocumentUriUsingTree(folder, it.id))
         }
     }
-    return null
+    return emptyList()
   }
 
   private suspend fun findInFolder(folder: Uri, audioId: String): FolderMatch? {
@@ -126,13 +138,15 @@ internal class LyricsReader(private val context: Context) {
     }
   }
 
-  private fun matchingLyrics(folder: Uri, children: List<Document>, audioName: String): Uri? {
-    val expected = audioName.substringBeforeLast('.') + ".lrc"
-    val lyrics = children.firstOrNull {
-      !it.directory && it.name.equals(expected, ignoreCase = true)
+  private fun matchingLyrics(folder: Uri, children: List<Document>, audioName: String): List<Uri> =
+    matchingNames(audioName).flatMap { expected ->
+      children
+        .filter { !it.directory && it.name.equals(expected, ignoreCase = true) }
+        .map { DocumentsContract.buildDocumentUriUsingTree(folder, it.id) }
     }
-    return lyrics?.let { DocumentsContract.buildDocumentUriUsingTree(folder, it.id) }
-  }
+
+  private fun matchingNames(audioName: String): List<String> =
+    listOf("spl", "lrc").map { audioName.substringBeforeLast('.') + "." + it }
 
   private suspend fun children(folder: Uri, folderId: String): List<Document> {
     val result = mutableListOf<Document>()
@@ -151,7 +165,7 @@ internal class LyricsReader(private val context: Context) {
     return result
   }
 
-  private data class FolderMatch(val lyrics: Uri?)
+  private data class FolderMatch(val lyrics: List<Uri>)
 
   private data class Document(val id: String, val name: String, val directory: Boolean)
 }

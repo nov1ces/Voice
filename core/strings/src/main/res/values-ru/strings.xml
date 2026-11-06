@@ -83,6 +83,8 @@
     <string name="book.edit.cover.file">Обложка с устройства</string>
     <string name="book.edit.cover.internet">Обложка из интернета</string>
     <string name="book.edit.part.label">Часть</string>
+    <string name="book.continuous_lyrics">Подсветка по словам</string>
+    <string name="book.continuous_lyrics.description">Подсвечивает каждое слово во время прослушивания. Отключите, чтобы подсвечивать строки целиком.</string>
     <string name="book.edit.series.label">Серия</string>
     <string name="book.edit.server.failed">Не удалось сохранить на вашем сервере. Попробуйте ещё раз.</string>
     <string name="book.edit.server.not_allowed">Ваша учётная запись на сервере не может изменять книги.</string>

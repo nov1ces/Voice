@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">கோப்புகளிலிருந்து அட்டைப்படம்</string>
     <string name="book.edit.cover.internet">இணையத்திலிருந்து அட்டைப்படம்</string>
     <string name="book.edit.part.label">பாகம்</string>
+    <string name="book.continuous_lyrics">சொல் வாரியாக முன்னிலைப்படுத்து</string>
+    <string name="book.continuous_lyrics.description">கேட்கும்போது ஒவ்வொரு சொல்லையும் முன்னிலைப்படுத்தும். முழு வரிகளையும் முன்னிலைப்படுத்த இதை முடக்குங்கள்.</string>
     <string name="book.edit.series.label">தொடர்</string>
     <string name="book.edit.server.failed">உங்கள் சர்வரில் சேமிக்க முடியவில்லை. மீண்டும் முயலவும்.</string>
     <string name="book.edit.server.not_allowed">சர்வரில் உள்ள உங்கள் கணக்கால் புத்தகங்களை மாற்ற முடியாது.</string>

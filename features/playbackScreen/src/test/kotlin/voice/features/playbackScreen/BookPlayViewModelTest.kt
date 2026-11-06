@@ -443,6 +443,28 @@ class BookPlayViewModelTest {
   }
 
   @Test
+  fun `the player follows only the current book word highlighting preference`() = scope.runTest {
+    val current = book()
+    val books = MutableStateFlow(current)
+    val model = viewModel(book = current, bookFlow = books)
+
+    backgroundScope
+      .launchMolecule(RecompositionMode.Immediate) { model.viewState() }
+      .test {
+        assertNull(awaitItem())
+        assertEquals(true, awaitItem()!!.continuousLyrics)
+
+        books.value = current.copy(custom = current.custom.copy(continuousLyrics = false))
+        assertEquals(false, awaitItem()!!.continuousLyrics)
+
+        books.value = current.copy(custom = current.custom.copy(continuousLyrics = true))
+        assertEquals(true, awaitItem()!!.continuousLyrics)
+      }
+
+    assertEquals(true, book().custom.continuousLyrics)
+  }
+
+  @Test
   fun `viewState exposes progress through the whole book`() = scope.runTest {
     val viewModel = viewModel()
 
@@ -599,12 +621,13 @@ class BookPlayViewModelTest {
     playStateFlow: MutableStateFlow<PlayStateManager.PlayState> =
       MutableStateFlow(PlayStateManager.PlayState.Paused),
     lastPlaybackSpeed: Float = 1F,
+    bookFlow: MutableStateFlow<Book> = MutableStateFlow(book),
   ): BookPlayViewModel {
     return BookPlayViewModel(
       bookRepository =
         mockk {
           coEvery { get(book.id) } returns book
-          every { flow(book.id) } returns MutableStateFlow(book)
+          every { flow(book.id) } returns bookFlow
         },
       currentBookResolver = currentBookResolver,
       player =

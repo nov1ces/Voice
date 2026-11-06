@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Omslag från filsystemet</string>
     <string name="book.edit.cover.internet">Omslag från internet</string>
     <string name="book.edit.part.label">Del</string>
+    <string name="book.continuous_lyrics">Markera ord för ord</string>
+    <string name="book.continuous_lyrics.description">Markerar varje ord medan du lyssnar. Stäng av för att markera hela rader.</string>
     <string name="book.edit.series.label">Serie</string>
     <string name="book.edit.server.failed">Det gick inte att spara på din server. Försök igen.</string>
     <string name="book.edit.server.not_allowed">Ditt konto på servern får inte ändra böcker.</string>

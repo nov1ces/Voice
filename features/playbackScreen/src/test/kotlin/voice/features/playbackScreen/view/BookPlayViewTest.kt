@@ -37,6 +37,8 @@ import androidx.core.net.toUri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
@@ -51,6 +53,7 @@ import voice.core.ui.VoiceTheme
 import voice.features.playbackScreen.BookPlayViewState
 import voice.features.playbackScreen.lyrics.LyricLine
 import voice.features.playbackScreen.lyrics.LyricsDocument
+import voice.features.playbackScreen.lyrics.parseLyrics
 
 @RunWith(AndroidJUnit4::class)
 @Config(qualifiers = "w1400dp-h1400dp")
@@ -135,9 +138,53 @@ class BookPlayViewTest {
   }
 
   @Test
+  fun `SPL displays timed words and clears the sentence highlight during silence`() {
+    val lyrics =
+      assertNotNull(
+        parseLyrics("[00:01.000]<00:02.000>甲<00:03.000>乙[00:04.000]\n[00:10.000]次句[00:11.000]"),
+      )
+    var state by mutableStateOf(viewState.copy(playing = false, lyricsPositionMs = 1500L))
+    compose.setContent {
+      VoiceTheme {
+        Box(Modifier.requiredSize(412.dp, 915.dp)) {
+          LyricsContent(
+            lyrics = lyrics,
+            viewState = state,
+            bookId = BookId("book"),
+            clock = { 0F },
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(),
+            onLineClick = { state = state.copy(lyricsPositionMs = it) },
+            onSeek = {},
+            onPlayClick = {},
+            onRewindClick = {},
+            onFastForwardClick = {},
+          )
+        }
+      }
+    }
+
+    compose.onNodeWithText("甲乙").assertIsDisplayed().assertIsSelected()
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 2500L) }
+    compose.onNodeWithText("甲乙").assertIsDisplayed().assertIsSelected()
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 3500L) }
+    compose.onNodeWithText("甲乙").assertIsDisplayed().assertIsSelected()
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 4000L) }
+    compose.onNodeWithText("甲乙").assertIsDisplayed().assertIsNotSelected()
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 10500L) }
+    compose.onNodeWithText("次句").assertIsDisplayed().assertIsSelected()
+    compose.onNodeWithText("次句").performClick()
+    compose.runOnIdle { assertEquals(10000L, state.lyricsPositionMs) }
+  }
+
+  @Test
   fun `long lyrics keep a small visible window and resume following after manual scrolling`() {
     val count = 24000
-    val lyrics = LyricsDocument(List(count) { LyricLine(it * 150L + 5000L, "台词 $it") })
+    val lyrics =
+      LyricsDocument(
+        List(count) {
+          LyricLine(it * 150L + 5000L, "台词 $it", endTimeMs = it * 150L + 5100L)
+        },
+      )
     var state by mutableStateOf(viewState.copy(playing = false, lyricsPositionMs = 5000L))
     compose.setContent {
       VoiceTheme {
@@ -170,6 +217,9 @@ class BookPlayViewTest {
         .onAllNodes(androidx.compose.ui.test.hasText("台词", substring = true))
         .fetchSemanticsNodes()
     assertTrue(rendered.size < 80)
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = (count - 1) * 150L + 5125L) }
+    compose.onNodeWithText("台词 ${count - 1}").assertIsDisplayed().assertIsNotSelected()
+    compose.onNodeWithText("台词 0").assertDoesNotExist()
     compose.runOnIdle { state = state.copy(lyricsPositionMs = 0L) }
     compose.onNodeWithText("台词 0").assertIsDisplayed().assertIsNotSelected()
     compose.onNodeWithText("台词 0").performClick()

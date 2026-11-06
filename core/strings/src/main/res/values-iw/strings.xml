@@ -80,6 +80,8 @@
     <string name="book.edit.cover.file">עטיפות מקובץ קיים</string>
     <string name="book.edit.cover.internet">עטיפות מהאינטרנט</string>
     <string name="book.edit.part.label">חלק</string>
+    <string name="book.continuous_lyrics">הדגשת מילים בנפרד</string>
+    <string name="book.continuous_lyrics.description">כל מילה מודגשת במהלך ההאזנה. אפשר לכבות כדי להדגיש שורות שלמות.</string>
     <string name="book.edit.series.label">סדרה</string>
     <string name="book.edit.server.failed">השמירה בשרת נכשלה. נסו שוב.</string>
     <string name="book.edit.server.not_allowed">לחשבון שלכם בשרת אין הרשאה לשנות ספרים.</string>

@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Borító a fájlrendszerből</string>
     <string name="book.edit.cover.internet">Borító az internetről</string>
     <string name="book.edit.part.label">Rész</string>
+    <string name="book.continuous_lyrics">Szavankénti kiemelés</string>
+    <string name="book.continuous_lyrics.description">Hallgatás közben kiemeli az egyes szavakat. Kikapcsolva teljes sorokat emel ki.</string>
     <string name="book.edit.series.label">Sorozat</string>
     <string name="book.edit.server.failed">Nem sikerült menteni a szerverre. Próbálja újra.</string>
     <string name="book.edit.server.not_allowed">A szerveren lévő fiókja nem módosíthat könyveket.</string>

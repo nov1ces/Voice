@@ -74,6 +74,8 @@
     <string name="book.edit.cover.file">從檔案選擇封面</string>
     <string name="book.edit.cover.internet">從網路尋找封面</string>
     <string name="book.edit.part.label">集</string>
+    <string name="book.continuous_lyrics">逐字亮顯</string>
+    <string name="book.continuous_lyrics.description">聆聽時逐字亮顯。關閉後，改為整句亮顯。</string>
     <string name="book.edit.series.label">系列</string>
     <string name="book.edit.server.failed">無法儲存到你的伺服器，請再試一次。</string>
     <string name="book.edit.server.not_allowed">你在伺服器上的帳號沒有修改書籍的權限。</string>

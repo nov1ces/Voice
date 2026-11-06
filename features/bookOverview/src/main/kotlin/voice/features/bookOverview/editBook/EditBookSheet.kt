@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue.Expanded
 import androidx.compose.material3.SheetValue.Hidden
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberBottomSheetState
@@ -58,6 +60,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
@@ -89,6 +92,7 @@ internal fun EditBookSheet(
   onAuthorChange: (String) -> Unit,
   onSeriesChange: (String) -> Unit,
   onPartChange: (String) -> Unit,
+  onContinuousLyricsChange: (Boolean) -> Unit,
   onConfirm: () -> Unit,
   onDismiss: () -> Unit,
 ) {
@@ -134,6 +138,7 @@ internal fun EditBookSheet(
       onAuthorChange = onAuthorChange,
       onSeriesChange = onSeriesChange,
       onPartChange = onPartChange,
+      onContinuousLyricsChange = onContinuousLyricsChange,
       // the sheet of a server book stays until the server took the edit
       onSave = {
         if (!viewState.remote) {
@@ -155,6 +160,7 @@ private fun EditBookContent(
   onAuthorChange: (String) -> Unit,
   onSeriesChange: (String) -> Unit,
   onPartChange: (String) -> Unit,
+  onContinuousLyricsChange: (Boolean) -> Unit,
   onSave: () -> Unit,
   onCancel: () -> Unit,
 ) {
@@ -324,6 +330,43 @@ private fun EditBookContent(
       Spacer(Modifier.height(16.dp))
       partField()
     }
+    Spacer(Modifier.height(16.dp))
+    Surface(
+      shape = RoundedCornerShape(16.dp),
+      color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    ) {
+      Row(
+        modifier =
+          Modifier.fillMaxWidth()
+            .toggleable(
+              value = viewState.continuousLyrics,
+              enabled = !readOnly,
+              role = Role.Switch,
+              onValueChange = onContinuousLyricsChange,
+            )
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Column(Modifier.weight(1F)) {
+          Text(
+            text = stringResource(StringsR.string.book_continuous_lyrics),
+            style = MaterialTheme.typography.bodyLarge,
+          )
+          Spacer(Modifier.height(4.dp))
+          Text(
+            text = stringResource(StringsR.string.book_continuous_lyrics_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+          )
+        }
+        Spacer(Modifier.width(16.dp))
+        Switch(
+          checked = viewState.continuousLyrics,
+          onCheckedChange = null,
+          enabled = !readOnly,
+        )
+      }
+    }
     val error =
       when (viewState.serverResult) {
         ServerEdit.NotAllowed -> StringsR.string.book_edit_server_not_allowed
@@ -427,6 +470,7 @@ private fun EditBookPreview() {
         onAuthorChange = {},
         onSeriesChange = {},
         onPartChange = {},
+        onContinuousLyricsChange = {},
         onSave = {},
         onCancel = {},
       )
@@ -455,6 +499,7 @@ private fun EditServerBookPreview() {
         onAuthorChange = {},
         onSeriesChange = {},
         onPartChange = {},
+        onContinuousLyricsChange = {},
         onSave = {},
         onCancel = {},
       )

@@ -80,6 +80,8 @@
     <string name="book.edit.cover.file">Capa do sistema de arquivos</string>
     <string name="book.edit.cover.internet">Capa da internet</string>
     <string name="book.edit.part.label">Volume</string>
+    <string name="book.continuous_lyrics">Destaque palavra por palavra</string>
+    <string name="book.continuous_lyrics.description">Destaca cada palavra enquanto você ouve. Desative para destacar linhas inteiras.</string>
     <string name="book.edit.series.label">Série</string>
     <string name="book.edit.server.failed">Não foi possível salvar no seu servidor. Tente novamente.</string>
     <string name="book.edit.server.not_allowed">Sua conta no servidor não pode alterar livros.</string>

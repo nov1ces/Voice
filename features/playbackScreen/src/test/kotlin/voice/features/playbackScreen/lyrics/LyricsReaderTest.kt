@@ -36,6 +36,20 @@ class LyricsReaderTest {
   }
 
   @Test
+  fun `prefers a case insensitive spl sidecar and falls back to lrc`() = runTest {
+    val audio = folder.newFile("Episode.mp3")
+    val spl = folder.newFile("episode.SpL")
+    spl.writeText("[00:01.000]这是 SPL 台词[00:02.000]")
+    folder.newFile("EPISODE.LrC").writeText("[00:00.00]LRC line")
+
+    assertEquals("这是 SPL 台词", assertNotNull(read(audio)).lines.single().text)
+    spl.writeText("invalid lyrics")
+    assertEquals("LRC line", assertNotNull(read(audio)).lines.single().text)
+    spl.writeText(" ")
+    assertEquals("LRC line", assertNotNull(read(audio)).lines.single().text)
+  }
+
+  @Test
   fun `missing empty and invalid lyrics leave the feature unavailable`() = runTest {
     val audio = folder.newFile("episode.mp3")
 

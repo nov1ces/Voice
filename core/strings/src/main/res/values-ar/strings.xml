@@ -89,6 +89,8 @@
     <string name="book.edit.cover.file">الغلاف من ملفات الجهاز</string>
     <string name="book.edit.cover.internet">الغلاف من الإنترنت</string>
     <string name="book.edit.part.label">الجزء</string>
+    <string name="book.continuous_lyrics">تمييز كلمة بكلمة</string>
+    <string name="book.continuous_lyrics.description">تمييز كل كلمة أثناء الاستماع. عند الإيقاف، يُميَّز السطر كاملًا.</string>
     <string name="book.edit.series.label">السلسلة</string>
     <string name="book.edit.server.failed">تعذّر الحفظ على خادمك. يمكنك المحاولة مجددًا.</string>
     <string name="book.edit.server.not_allowed">لا يملك حسابك على الخادم صلاحية تعديل الكتب.</string>

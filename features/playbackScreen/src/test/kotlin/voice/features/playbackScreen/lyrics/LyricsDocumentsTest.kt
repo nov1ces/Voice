@@ -45,6 +45,33 @@ class LyricsDocumentsTest {
   }
 
   @Test
+  fun `opaque document IDs prefer spl and fall back to lrc`() = runTest {
+    val provider = provider()
+    provider.folders["root"] = listOf(Node("folder", "Story", true))
+    provider.folders["folder"] =
+      listOf(Node("audio", "Episode.mp3"), Node("lrc", "episode.LRC"), Node("spl", "EPISODE.SpL"))
+    val spl = files.newFile("preferred.spl").apply { writeText("[00:01.000]这是 SPL 台词[00:02.000]") }
+    provider.sidecars["spl"] = spl
+    provider.sidecars["lrc"] = provider.lyrics
+    val audio = uri("audio")
+
+    assertEquals(
+      "这是 SPL 台词",
+      assertNotNull(reader.read(BookId(audio), ChapterId(audio))).lines.single().text,
+    )
+    spl.writeText("invalid lyrics")
+    assertEquals(
+      "来自存储提供程序的台词",
+      assertNotNull(reader.read(BookId(audio), ChapterId(audio))).lines.single().text,
+    )
+    provider.sidecars.remove("spl")
+    assertEquals(
+      "来自存储提供程序的台词",
+      assertNotNull(reader.read(BookId(audio), ChapterId(audio))).lines.single().text,
+    )
+  }
+
+  @Test
   fun `an inaccessible sibling folder does not hide the audio sidecar`() = runTest {
     val provider = provider()
     provider.folders["root"] =
@@ -88,6 +115,7 @@ class LyricsDocumentsTest {
     val folders = mutableMapOf<String, List<Node>>()
     val queries = mutableListOf<String>()
     lateinit var lyrics: File
+    val sidecars = mutableMapOf<String, File>()
 
     override fun onCreate(): Boolean = true
 
@@ -116,7 +144,12 @@ class LyricsDocumentsTest {
     }
 
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor =
-      ParcelFileDescriptor.open(lyrics, ParcelFileDescriptor.MODE_READ_ONLY)
+      ParcelFileDescriptor.open(
+        if (sidecars.isEmpty()) lyrics
+        else
+          sidecars[DocumentsContract.getDocumentId(uri)] ?: throw java.io.FileNotFoundException(),
+        ParcelFileDescriptor.MODE_READ_ONLY,
+      )
 
     override fun getType(uri: Uri): String? = null
 

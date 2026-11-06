@@ -74,6 +74,8 @@
     <string name="book.edit.cover.file">ファイルシステムからのカバー</string>
     <string name="book.edit.cover.internet">インターネットからのカバー</string>
     <string name="book.edit.part.label">巻</string>
+    <string name="book.continuous_lyrics">単語ごとにハイライト</string>
+    <string name="book.continuous_lyrics.description">再生に合わせて単語を順にハイライトします。オフにすると行全体をハイライトします。</string>
     <string name="book.edit.series.label">シリーズ</string>
     <string name="book.edit.server.failed">サーバーに保存できませんでした。もう一度お試しください。</string>
     <string name="book.edit.server.not_allowed">このアカウントには、サーバー上の本を変更する権限がありません。</string>

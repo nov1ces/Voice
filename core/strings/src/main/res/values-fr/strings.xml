@@ -80,6 +80,8 @@
     <string name="book.edit.cover.file">Couverture depuis le système de fichiers</string>
     <string name="book.edit.cover.internet">Couverture depuis internet</string>
     <string name="book.edit.part.label">Tome</string>
+    <string name="book.continuous_lyrics">Surlignage mot par mot</string>
+    <string name="book.continuous_lyrics.description">Surligne chaque mot pendant l’écoute. Désactivez cette option pour surligner les lignes entières.</string>
     <string name="book.edit.series.label">Série</string>
     <string name="book.edit.server.failed">Impossible d\'enregistrer sur votre serveur. Réessayez.</string>
     <string name="book.edit.server.not_allowed">Votre compte sur le serveur ne peut pas modifier les livres.</string>

@@ -83,6 +83,66 @@ class EditBookViewModelTest {
     }
 
   @Test
+  fun `word highlighting starts enabled for a book without an edit`() =
+    runTest(dispatcher) {
+      viewModel.onItemClick(book.id, BottomSheetItem.Edit)
+
+      assertTrue(viewModel.state.value!!.continuousLyrics)
+    }
+
+  @Test
+  fun `the sheet reads the saved word highlighting choice`() =
+    runTest(dispatcher) {
+      coEvery { repo.get(book.id) } returns
+        book.copy(custom = book.custom.copy(continuousLyrics = false))
+
+      viewModel.onItemClick(book.id, BottomSheetItem.Edit)
+
+      assertFalse(viewModel.state.value!!.continuousLyrics)
+    }
+
+  @Test
+  fun `cancel discards the word highlighting choice`() =
+    runTest(dispatcher) {
+      viewModel.onItemClick(book.id, BottomSheetItem.Edit)
+      viewModel.onContinuousLyricsChange(false)
+
+      viewModel.onDismiss()
+      advanceUntilIdle()
+
+      assertNull(viewModel.state.value)
+      coVerify(exactly = 0) { repo.updateCustomMetadata(any(), any()) }
+      viewModel.onItemClick(book.id, BottomSheetItem.Edit)
+      assertTrue(viewModel.state.value!!.continuousLyrics)
+    }
+
+  @Test
+  fun `saving changes word highlighting only for this book and keeps the other edits`() =
+    runTest(dispatcher) {
+      val edited =
+        book.copy(custom = book.custom.copy(name = "My Dune", hidden = true, series = "My saga"))
+      val otherBook = book(name = "Foundation")
+      coEvery { repo.get(otherBook.id) } returns otherBook
+
+      val saved = save(continuousLyrics = false, book = edited)
+      viewModel.onItemClick(otherBook.id, BottomSheetItem.Edit)
+
+      assertEquals(edited.custom.copy(continuousLyrics = false), saved.custom)
+      assertTrue(viewModel.state.value!!.continuousLyrics)
+      coVerify(exactly = 0) { repo.updateCustomMetadata(otherBook.id, any()) }
+    }
+
+  @Test
+  fun `a title edit keeps the saved word highlighting choice`() =
+    runTest(dispatcher) {
+      val edited = book.copy(custom = book.custom.copy(continuousLyrics = false))
+
+      val saved = save(title = "Dune Messiah", book = edited)
+
+      assertFalse(saved.custom.continuousLyrics)
+    }
+
+  @Test
   fun `typing suggests the series of the other books, those starting with it first`() =
     runTest(dispatcher) {
       coEvery { repo.all() } returns
@@ -307,6 +367,40 @@ class EditBookViewModelTest {
       }
     }
 
+  @Test
+  fun `word highlighting for a server book saves locally without asking the server`() =
+    runTest(dispatcher) {
+      coEvery { repo.updateCustomMetadata(serverBook.id, capture(update)) } returns Unit
+      openServerBook()
+      viewModel.onContinuousLyricsChange(false)
+
+      viewModel.onConfirm()
+      advanceUntilIdle()
+
+      assertEquals(ServerEdit.Saved, viewModel.state.value?.serverResult)
+      coVerify { repo.updateCustomMetadata(serverBook.id, any()) }
+      assertFalse(update.captured(serverBook.custom).continuousLyrics)
+      coVerify(exactly = 0) {
+        val _ = serverLibrary.updateBook(any(), any())
+      }
+    }
+
+  @Test
+  fun `a failed server edit keeps the local word highlighting choice unsaved`() =
+    runTest(dispatcher) {
+      coEvery { serverLibrary.updateBook(any(), any()) } returns ServerEdit.Failed
+      openServerBook()
+      viewModel.onTitleChange("Caliban's War")
+      viewModel.onContinuousLyricsChange(false)
+
+      viewModel.onConfirm()
+      advanceUntilIdle()
+
+      assertEquals(ServerEdit.Failed, viewModel.state.value?.serverResult)
+      assertFalse(viewModel.state.value!!.continuousLyrics)
+      coVerify(exactly = 0) { repo.updateCustomMetadata(any(), any()) }
+    }
+
   private suspend fun openServerBook() {
     coEvery { repo.get(serverBook.id) } returns serverBook
     viewModel.onItemClick(serverBook.id, BottomSheetItem.Edit)
@@ -318,6 +412,7 @@ class EditBookViewModelTest {
     author: String? = null,
     series: String? = null,
     part: String? = null,
+    continuousLyrics: Boolean? = null,
     book: Book = this@EditBookViewModelTest.book,
   ): Book {
     coEvery { repo.get(book.id) } returns book
@@ -326,6 +421,7 @@ class EditBookViewModelTest {
     author?.let(viewModel::onAuthorChange)
     series?.let(viewModel::onSeriesChange)
     part?.let(viewModel::onPartChange)
+    continuousLyrics?.let(viewModel::onContinuousLyricsChange)
     viewModel.onConfirm()
     advanceUntilIdle()
     coVerify { repo.updateCustomMetadata(book.id, any()) }

@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Cover fra filsystemet</string>
     <string name="book.edit.cover.internet">Cover fra internettet</string>
     <string name="book.edit.part.label">Del</string>
+    <string name="book.continuous_lyrics">Fremhævning ord for ord</string>
+    <string name="book.continuous_lyrics.description">Fremhæv hvert ord, mens du lytter. Slå fra for at fremhæve hele linjer.</string>
     <string name="book.edit.series.label">Serie</string>
     <string name="book.edit.server.failed">Kunne ikke gemme på din server. Prøv igen.</string>
     <string name="book.edit.server.not_allowed">Din konto på serveren kan ikke ændre bøger.</string>

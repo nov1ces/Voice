@@ -68,6 +68,21 @@ class BookRepositoryImplTest {
     assertEquals(expected = emptyList(), actual = db.customMetadataDao().all())
   }
 
+  @Test
+  fun `file metadata changes keep the word highlighting choice`() = runTest {
+    val content = content(name = "Dune", author = "Herbert")
+    contentRepo.put(content)
+    repo.updateCustomMetadata(content.id) { it.copy(continuousLyrics = false) }
+
+    contentRepo.put(content.copy(metadata = content.metadata.copy(name = "Dune Messiah")))
+    repo.updateCustomMetadata(content.id) { it.copy(name = "Dune Messiah") }
+
+    assertEquals(
+      expected = CustomMetadata(content.id, continuousLyrics = false),
+      actual = customMetadataRepo.get(content.id),
+    )
+  }
+
   private fun content(
     name: String,
     author: String,

@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">फ़ाइल सिस्टम से कवर</string>
     <string name="book.edit.cover.internet">इंटरनेट से कवर</string>
     <string name="book.edit.part.label">भाग</string>
+    <string name="book.continuous_lyrics">शब्द-दर-शब्द हाइलाइट</string>
+    <string name="book.continuous_lyrics.description">सुनते समय हर शब्द हाइलाइट होता है। पूरी पंक्तियाँ हाइलाइट करने के लिए इसे बंद करें।</string>
     <string name="book.edit.series.label">सीरीज़</string>
     <string name="book.edit.server.failed">आपके सर्वर पर सहेजा नहीं जा सका। फिर से कोशिश करें।</string>
     <string name="book.edit.server.not_allowed">सर्वर पर आपके खाते को पुस्तकें बदलने की अनुमति नहीं है।</string>

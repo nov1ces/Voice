@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Kansi tiedostojärjestelmästä</string>
     <string name="book.edit.cover.internet">Kansi internetistä</string>
     <string name="book.edit.part.label">Osa</string>
+    <string name="book.continuous_lyrics">Sanojen korostus</string>
+    <string name="book.continuous_lyrics.description">Korostaa sanat kuunnellessa yksi kerrallaan. Kun asetus on pois päältä, kokonaiset rivit korostetaan.</string>
     <string name="book.edit.series.label">Sarja</string>
     <string name="book.edit.server.failed">Tallennus palvelimellesi epäonnistui. Yritä uudelleen.</string>
     <string name="book.edit.server.not_allowed">Tililläsi ei ole palvelimella oikeutta muuttaa kirjoja.</string>

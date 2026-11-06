@@ -14,6 +14,7 @@ public data class CustomMetadata(
   val series: String? = null,
   val part: String? = null,
   @ColumnInfo(defaultValue = "0") val hidden: Boolean = false,
+  @ColumnInfo(defaultValue = "1") val continuousLyrics: Boolean = true,
 ) {
 
   public fun followingFiles(metadata: BookMetadata): CustomMetadata {

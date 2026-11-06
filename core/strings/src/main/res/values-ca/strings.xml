@@ -80,6 +80,8 @@
     <string name="book.edit.cover.file">Portada del sistema de fitxers</string>
     <string name="book.edit.cover.internet">Portada d\'Internet</string>
     <string name="book.edit.part.label">Número</string>
+    <string name="book.continuous_lyrics">Ressaltat paraula per paraula</string>
+    <string name="book.continuous_lyrics.description">Ressalta cada paraula mentre escolteu. Desactiveu-ho per ressaltar línies senceres.</string>
     <string name="book.edit.series.label">Sèrie</string>
     <string name="book.edit.server.failed">No s\'ha pogut desar al vostre servidor. Torneu-ho a provar.</string>
     <string name="book.edit.server.not_allowed">El vostre compte del servidor no pot canviar llibres.</string>

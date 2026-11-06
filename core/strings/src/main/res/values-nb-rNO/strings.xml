@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Omslag fra filsystemet</string>
     <string name="book.edit.cover.internet">Omslag fra Internett</string>
     <string name="book.edit.part.label">Del</string>
+    <string name="book.continuous_lyrics">Utheving ord for ord</string>
+    <string name="book.continuous_lyrics.description">Uthev hvert ord mens du lytter. Slå av for å utheve hele linjer.</string>
     <string name="book.edit.series.label">Serie</string>
     <string name="book.edit.server.failed">Kunne ikke lagre på serveren din. Prøv igjen.</string>
     <string name="book.edit.server.not_allowed">Kontoen din på serveren kan ikke endre bøker.</string>

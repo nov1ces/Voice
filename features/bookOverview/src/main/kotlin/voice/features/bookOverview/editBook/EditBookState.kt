@@ -11,6 +11,7 @@ internal data class EditBookState(
   val cover: String?,
   val series: String = "",
   val part: String = "",
+  val continuousLyrics: Boolean = true,
   val saving: Boolean = false,
   val serverResult: ServerEdit? = null,
   val allSeries: List<SeriesSuggestion> = emptyList(),
@@ -18,6 +19,7 @@ internal data class EditBookState(
   val initialAuthor: String = author,
   val initialSeries: String = series,
   val initialPart: String = part,
+  val initialContinuousLyrics: Boolean = continuousLyrics,
 ) {
 
   val remote: Boolean = bookId.isRemote

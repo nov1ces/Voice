@@ -77,6 +77,8 @@
     <string name="book.edit.cover.file">Kaanepilt nutiseadme failisüsteemist</string>
     <string name="book.edit.cover.internet">Kaanepilt internetist</string>
     <string name="book.edit.part.label">Osa</string>
+    <string name="book.continuous_lyrics">Sõnahaaval esiletõstmine</string>
+    <string name="book.continuous_lyrics.description">Tõstab kuulamise ajal iga sõna esile. Väljalülitamisel tõstetakse esile terved read.</string>
     <string name="book.edit.series.label">Sari</string>
     <string name="book.edit.server.failed">Serverisse salvestamine ebaõnnestus. Proovi uuesti.</string>
     <string name="book.edit.server.not_allowed">Sinu kontol pole serveris luba raamatuid muuta.</string>
