@@ -357,6 +357,8 @@
     <string name="playback.chapters.title">Chapitres</string>
     <string name="playback.jump_back">Retour à %1$s</string>
     <string name="playback.jump_back.chapter">Retour au chap. %1$d · %2$s</string>
+    <string name="playback.lyrics">Paroles</string>
+    <string name="playback.lyrics.follow">Suivre la lecture</string>
     <string name="playback.option.skip_silence">Sauter les silences</string>
     <string name="playback.option.volume_boost">Augmentation du volume</string>
     <string name="playback.speed.decrease">Plus lent</string>

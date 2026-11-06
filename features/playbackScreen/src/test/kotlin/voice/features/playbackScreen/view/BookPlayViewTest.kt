@@ -3,6 +3,7 @@ package voice.features.playbackScreen.view
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -14,16 +15,25 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.getBoundsInRoot
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.core.net.toUri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.Test
@@ -31,20 +41,165 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import voice.core.data.BookId
+import voice.core.data.ChapterId
 import voice.core.strings.R
 import voice.core.ui.VoiceTheme
 import voice.features.playbackScreen.BookPlayViewState
+import voice.features.playbackScreen.lyrics.LyricLine
+import voice.features.playbackScreen.lyrics.LyricsDocument
 
 @RunWith(AndroidJUnit4::class)
 @Config(qualifiers = "w1400dp-h1400dp")
 class BookPlayViewTest {
 
   @get:Rule val compose = createComposeRule()
+  @get:Rule val files = TemporaryFolder()
 
   private val context = ApplicationProvider.getApplicationContext<Context>()
+
+  @Test
+  fun `lyrics can open only after loading and close on a chapter without lyrics`() {
+    val first = files.newFile("first.mp3")
+    val second = files.newFile("second.mp3")
+    files.newFile("first.lrc").writeText("[00:00.00]第一句\n[00:10.00]第二句")
+    var state by mutableStateOf(viewState.copy(playing = false, lyricsChapterId = null))
+    compose.setContent { VoiceTheme { Player(state) } }
+    val lyricsLabel = context.getString(R.string.playback_lyrics)
+
+    compose.onNodeWithContentDescription(lyricsLabel).assertDoesNotExist()
+    compose.runOnIdle { state = state.copy(lyricsChapterId = ChapterId(first.toUri())) }
+    compose.waitUntil(timeoutMillis = 10000) {
+      compose
+        .onAllNodes(androidx.compose.ui.test.hasContentDescription(lyricsLabel))
+        .fetchSemanticsNodes()
+        .isNotEmpty()
+    }
+    compose.onNodeWithContentDescription(lyricsLabel).performClick()
+    compose.onNodeWithText("第一句").assertIsDisplayed()
+
+    compose.runOnIdle { state = state.copy(lyricsChapterId = ChapterId(second.toUri())) }
+
+    compose.onNodeWithText("第一句").assertDoesNotExist()
+    compose.onNodeWithContentDescription(lyricsLabel).assertDoesNotExist()
+    compose
+      .onNodeWithContentDescription(context.getString(R.string.playback_action_play))
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun `compact lyrics keep dialogue and transport visible with large fonts`() {
+    var window by mutableStateOf(DpSize(384.dp, 240.dp))
+    val lyrics = LyricsDocument(listOf(LyricLine(0L, "广播剧台词")))
+    compose.setContent {
+      CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, 2F)) {
+        VoiceTheme {
+          Box(Modifier.requiredSize(window).testTag(WINDOW)) {
+            LyricsContent(
+              lyrics = lyrics,
+              viewState = viewState.copy(playing = false),
+              bookId = BookId("book"),
+              clock = { 0F },
+              contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 64.dp),
+              onLineClick = {},
+              onSeek = {},
+              onPlayClick = {},
+              onRewindClick = {},
+              onFastForwardClick = {},
+            )
+          }
+        }
+      }
+    }
+
+    listOf(DpSize(384.dp, 240.dp), DpSize(384.dp, 300.dp), DpSize(640.dp, 360.dp)).forEach { size ->
+      compose.runOnIdle { window = size }
+      compose.onNodeWithText("广播剧台词").assertIsDisplayed()
+      val bounds = compose.onNodeWithTag(WINDOW).getBoundsInRoot()
+      listOf(
+          R.string.playback_action_rewind,
+          R.string.playback_action_play,
+          R.string.playback_action_fast_forward,
+        )
+        .forEach { label ->
+          val button = compose.onNodeWithContentDescription(context.getString(label))
+          button.assertIsDisplayed()
+          val control = button.getBoundsInRoot()
+          assertTrue(control.left >= bounds.left && control.right <= bounds.right)
+          assertTrue(control.top >= bounds.top && control.bottom <= bounds.bottom)
+        }
+    }
+  }
+
+  @Test
+  fun `long lyrics keep a small visible window and resume following after manual scrolling`() {
+    val count = 24000
+    val lyrics = LyricsDocument(List(count) { LyricLine(it * 150L + 5000L, "台词 $it") })
+    var state by mutableStateOf(viewState.copy(playing = false, lyricsPositionMs = 5000L))
+    compose.setContent {
+      VoiceTheme {
+        Box(Modifier.requiredSize(412.dp, 915.dp)) {
+          LyricsContent(
+            lyrics = lyrics,
+            viewState = state,
+            bookId = BookId("book"),
+            clock = { 0F },
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(),
+            onLineClick = { state = state.copy(lyricsPositionMs = it) },
+            onSeek = {},
+            onPlayClick = {},
+            onRewindClick = {},
+            onFastForwardClick = {},
+          )
+        }
+      }
+    }
+
+    compose.onNodeWithText("台词 0").assertIsDisplayed().assertIsSelected()
+    compose.onNode(hasScrollAction()).performTouchInput { swipeUp() }
+    compose.onNodeWithText(context.getString(R.string.playback_lyrics_follow)).assertIsDisplayed()
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = (count - 1) * 150L + 5000L) }
+    compose.onNodeWithText("台词 ${count - 1}").assertDoesNotExist()
+    compose.onNodeWithText(context.getString(R.string.playback_lyrics_follow)).performClick()
+    compose.onNodeWithText("台词 ${count - 1}").assertIsDisplayed().assertIsSelected()
+    val rendered =
+      compose
+        .onAllNodes(androidx.compose.ui.test.hasText("台词", substring = true))
+        .fetchSemanticsNodes()
+    assertTrue(rendered.size < 80)
+    compose.runOnIdle { state = state.copy(lyricsPositionMs = 0L) }
+    compose.onNodeWithText("台词 0").assertIsDisplayed().assertIsNotSelected()
+    compose.onNodeWithText("台词 0").performClick()
+    compose.onNodeWithText("台词 0").assertIsDisplayed().assertIsSelected()
+  }
+
+  @Composable
+  private fun Player(state: BookPlayViewState) {
+    BookPlayView(
+      viewState = state,
+      bookId = BookId(files.root.toUri()),
+      onPlayClick = {},
+      onRewindClick = {},
+      onFastForwardClick = {},
+      onSeek = {},
+      onSleepTimerClick = {},
+      onBookmarkClick = {},
+      onBookmarkLongClick = {},
+      onSpeedChangeClick = {},
+      onSkipSilenceClick = {},
+      onVolumeBoostClick = {},
+      onSkipToNext = {},
+      onSkipToPrevious = {},
+      onCloseClick = {},
+      onBookActionsClick = {},
+      onCurrentChapterClick = {},
+      onJumpBack = {},
+      onJumpBackExpire = {},
+    )
+  }
 
   @Test
   fun `transport and every control that's shown stay inside the window`() {

@@ -357,6 +357,8 @@
     <string name="playback.chapters.title">פרקים</string>
     <string name="playback.jump_back">חזרה ל-%1$s</string>
     <string name="playback.jump_back.chapter">חזרה לפרק %1$d · %2$s</string>
+    <string name="playback.lyrics">מילים</string>
+    <string name="playback.lyrics.follow">מעקב אחר הניגון</string>
     <string name="playback.option.skip_silence">דילוג על קטעים שקטים</string>
     <string name="playback.option.volume_boost">הגברת עוצמה</string>
     <string name="playback.speed.decrease">לאט יותר</string>

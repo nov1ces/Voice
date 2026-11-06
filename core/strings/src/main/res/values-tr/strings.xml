@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Bölümler</string>
     <string name="playback.jump_back">%1$s konumuna dön</string>
     <string name="playback.jump_back.chapter">Böl. %1$d · %2$s konumuna dön</string>
+    <string name="playback.lyrics">Şarkı sözleri</string>
+    <string name="playback.lyrics.follow">Oynatmayı takip et</string>
     <string name="playback.option.skip_silence">Sessizliği geç</string>
     <string name="playback.option.volume_boost">Ses yükseltme</string>
     <string name="playback.speed.decrease">Daha yavaş</string>

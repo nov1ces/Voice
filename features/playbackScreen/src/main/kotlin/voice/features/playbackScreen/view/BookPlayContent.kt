@@ -63,6 +63,7 @@ internal fun BookPlayContent(
   onBookActionsClick: () -> Unit,
   onJumpBack: (id: Long) -> Unit,
   onJumpBackExpire: (id: Long) -> Unit,
+  onLyricsClick: (() -> Unit)? = null,
 ) {
   val entrance = rememberEntranceState()
   val cover: @Composable (Modifier) -> Unit = { modifier ->
@@ -183,6 +184,7 @@ internal fun BookPlayContent(
           if (viewState.showPreviousNextButtons) {
             ChaptersButton(onClick = onCurrentChapterClick)
           }
+          if (onLyricsClick != null) LyricsButton(onClick = onLyricsClick)
           BookActionsButton(onClick = onBookActionsClick)
         }
         cover(
@@ -371,6 +373,6 @@ private fun TitleBlock(
  * to right, so the timelines, chapter controls and transport controls stay in that order.
  */
 @Composable
-private fun MediaControlsDirection(content: @Composable () -> Unit) {
+internal fun MediaControlsDirection(content: @Composable () -> Unit) {
   CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr, content = content)
 }

@@ -321,6 +321,8 @@
     <string name="playback.chapters.title">チャプター</string>
     <string name="playback.jump_back">%1$s に戻る</string>
     <string name="playback.jump_back.chapter">第%1$d章 · %2$s に戻る</string>
+    <string name="playback.lyrics">歌詞</string>
+    <string name="playback.lyrics.follow">再生位置に追従</string>
     <string name="playback.option.skip_silence">無音をスキップ</string>
     <string name="playback.option.volume_boost">音量ブースト</string>
     <string name="playback.speed.decrease">遅く</string>

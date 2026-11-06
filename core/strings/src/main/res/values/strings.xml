@@ -579,6 +579,10 @@
     <string name="playback.chapters.title">Chapters</string>
     <string name="playback.jump_back">Back to %1$s</string>
     <string name="playback.jump_back.chapter">Back to Ch. %1$d · %2$s</string>
+    <!-- Button that opens the synchronized text for the current audio file. -->
+    <string name="playback.lyrics">Lyrics</string>
+    <!-- Button that resumes automatic scrolling after browsing the lyrics. -->
+    <string name="playback.lyrics.follow">Follow playback</string>
     <!-- Menu label for toggling silence skipping during playback. -->
     <string name="playback.option.skip_silence">Skip Silence</string>
     <!-- Menu and dialog title for changing volume gain. -->

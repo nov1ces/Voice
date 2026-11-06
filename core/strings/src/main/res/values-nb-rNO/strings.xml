@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Kapitler</string>
     <string name="playback.jump_back">Tilbake til %1$s</string>
     <string name="playback.jump_back.chapter">Tilbake til kap. %1$d · %2$s</string>
+    <string name="playback.lyrics">Sangtekst</string>
+    <string name="playback.lyrics.follow">Følg avspillingen</string>
     <string name="playback.option.skip_silence">Hopp over stillhet</string>
     <string name="playback.option.volume_boost">Lydstyrkeforsterkning</string>
     <string name="playback.speed.decrease">Saktere</string>

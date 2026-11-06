@@ -300,6 +300,27 @@ class BookPlayViewModelTest {
   }
 
   @Test
+  fun `a lyric timestamp seeks in the audio file instead of the current chapter mark`() =
+    scope.runTest {
+      every { player.setPosition(any(), any(), any()) } just Runs
+
+      viewModel.seekToLyrics(book.currentChapter.id, 30_000L)
+      yield()
+
+      verify(exactly = 1) { player.setPosition(30_000L, book.currentChapter.id) }
+    }
+
+  @Test
+  fun `a lyric click from an old chapter does not seek the new chapter`() = scope.runTest {
+    every { player.setPosition(any(), any(), any()) } just Runs
+
+    viewModel.seekToLyrics(book.chapters.first().id, 30_000L)
+    yield()
+
+    verify(exactly = 0) { player.setPosition(any(), any(), any()) }
+  }
+
+  @Test
   fun `overlay prefers live controller position`() {
     val persistedBook = book()
     val overlaidBook =

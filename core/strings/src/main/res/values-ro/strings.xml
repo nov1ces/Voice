@@ -357,6 +357,8 @@
     <string name="playback.chapters.title">Capitole</string>
     <string name="playback.jump_back">Înapoi la %1$s</string>
     <string name="playback.jump_back.chapter">Înapoi la cap. %1$d · %2$s</string>
+    <string name="playback.lyrics">Versuri</string>
+    <string name="playback.lyrics.follow">Urmărește redarea</string>
     <string name="playback.option.skip_silence">Omitere liniște</string>
     <string name="playback.option.volume_boost">Amplificare volum</string>
     <string name="playback.speed.decrease">Mai încet</string>

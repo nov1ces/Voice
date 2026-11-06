@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Luvut</string>
     <string name="playback.jump_back">Takaisin kohtaan %1$s</string>
     <string name="playback.jump_back.chapter">Takaisin: luku %1$d · %2$s</string>
+    <string name="playback.lyrics">Sanoitukset</string>
+    <string name="playback.lyrics.follow">Seuraa toistoa</string>
     <string name="playback.option.skip_silence">Ohita hiljaisuus</string>
     <string name="playback.option.volume_boost">Äänenvoimakkuuden tehostus</string>
     <string name="playback.speed.decrease">Hitaammin</string>

@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Capìtulos</string>
     <string name="playback.jump_back">Torra a %1$s</string>
     <string name="playback.jump_back.chapter">Torra a cap. %1$d · %2$s</string>
+    <string name="playback.lyrics">Testu</string>
+    <string name="playback.lyrics.follow">Sighi sa riprodutzione</string>
     <string name="playback.option.skip_silence">Brinca su mudìmene</string>
     <string name="playback.option.volume_boost">Crèschida de volùmene</string>
     <string name="playback.speed.decrease">Prus lentu</string>

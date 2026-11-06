@@ -375,6 +375,8 @@
     <string name="playback.chapters.title">Розділи</string>
     <string name="playback.jump_back">Повернутися до %1$s</string>
     <string name="playback.jump_back.chapter">Повернутися до розд. %1$d · %2$s</string>
+    <string name="playback.lyrics">Текст</string>
+    <string name="playback.lyrics.follow">Стежити за відтворенням</string>
     <string name="playback.option.skip_silence">Пропускати тишу</string>
     <string name="playback.option.volume_boost">Збільшення гучності</string>
     <string name="playback.speed.decrease">Повільніше</string>

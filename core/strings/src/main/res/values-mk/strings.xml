@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Поглавја</string>
     <string name="playback.jump_back">Назад на %1$s</string>
     <string name="playback.jump_back.chapter">Назад на погл. %1$d · %2$s</string>
+    <string name="playback.lyrics">Текст</string>
+    <string name="playback.lyrics.follow">Следи ја репродукцијата</string>
     <string name="playback.option.skip_silence">Прескокни тишина</string>
     <string name="playback.option.volume_boost">Појачување на звук</string>
     <string name="playback.speed.decrease">Побавно</string>

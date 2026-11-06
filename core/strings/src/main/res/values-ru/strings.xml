@@ -375,6 +375,8 @@
     <string name="playback.chapters.title">Главы</string>
     <string name="playback.jump_back">Вернуться к %1$s</string>
     <string name="playback.jump_back.chapter">Вернуться к гл. %1$d · %2$s</string>
+    <string name="playback.lyrics">Текст</string>
+    <string name="playback.lyrics.follow">Следовать за воспроизведением</string>
     <string name="playback.option.skip_silence">Пропускать тишину</string>
     <string name="playback.option.volume_boost">Усиление звука</string>
     <string name="playback.speed.decrease">Медленнее</string>

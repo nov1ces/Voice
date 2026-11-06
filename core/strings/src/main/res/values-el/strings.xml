@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Κεφάλαια</string>
     <string name="playback.jump_back">Πίσω στο %1$s</string>
     <string name="playback.jump_back.chapter">Πίσω στο κεφ. %1$d · %2$s</string>
+    <string name="playback.lyrics">Στίχοι</string>
+    <string name="playback.lyrics.follow">Παρακολούθηση αναπαραγωγής</string>
     <string name="playback.option.skip_silence">Παράλειψη σιωπής</string>
     <string name="playback.option.volume_boost">Ενίσχυση έντασης</string>
     <string name="playback.speed.decrease">Πιο αργά</string>

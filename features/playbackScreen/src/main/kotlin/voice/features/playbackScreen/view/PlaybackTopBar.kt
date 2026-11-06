@@ -33,6 +33,7 @@ internal fun PlaybackTopBar(
   onChaptersClick: () -> Unit,
   onBookActionsClick: () -> Unit,
   modifier: Modifier = Modifier,
+  onLyricsClick: (() -> Unit)? = null,
 ) {
   Row(
     modifier =
@@ -46,6 +47,7 @@ internal fun PlaybackTopBar(
   ) {
     CloseButton(onClick = onCloseClick)
     Spacer(Modifier.weight(1F))
+    if (onLyricsClick != null) LyricsButton(onClick = onLyricsClick)
     if (showChapters) {
       ChaptersButton(onClick = onChaptersClick)
     }
@@ -117,3 +119,13 @@ private fun topBarButtonColors(): IconButtonColors =
   IconButtonDefaults.filledTonalIconButtonColors(
     containerColor = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.9F),
   )
+
+@Composable
+internal fun LyricsButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  TopBarButton(
+    icon = VoiceIcons.FormatQuote,
+    contentDescription = stringResource(R.string.playback_lyrics),
+    onClick = onClick,
+    modifier = modifier,
+  )
+}

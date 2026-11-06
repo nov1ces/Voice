@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Hoofdstukken</string>
     <string name="playback.jump_back">Terug naar %1$s</string>
     <string name="playback.jump_back.chapter">Terug naar hfst. %1$d · %2$s</string>
+    <string name="playback.lyrics">Songtekst</string>
+    <string name="playback.lyrics.follow">Afspelen volgen</string>
     <string name="playback.option.skip_silence">Stilte overslaan</string>
     <string name="playback.option.volume_boost">Volumeversterking</string>
     <string name="playback.speed.decrease">Langzamer</string>

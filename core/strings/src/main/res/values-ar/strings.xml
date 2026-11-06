@@ -411,6 +411,8 @@
     <string name="playback.chapters.title">الفصول</string>
     <string name="playback.jump_back">العودة إلى %1$s</string>
     <string name="playback.jump_back.chapter">العودة إلى الفصل %1$d · %2$s</string>
+    <string name="playback.lyrics">الكلمات</string>
+    <string name="playback.lyrics.follow">متابعة التشغيل</string>
     <string name="playback.option.skip_silence">تخطي الصمت</string>
     <string name="playback.option.volume_boost">تعزيز الصوت</string>
     <string name="playback.speed.decrease">أبطأ</string>

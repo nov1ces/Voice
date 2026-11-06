@@ -27,6 +27,7 @@ import voice.core.common.MainScope
 import voice.core.data.Book
 import voice.core.data.BookId
 import voice.core.data.Bookmark
+import voice.core.data.ChapterId
 import voice.core.data.ListeningEvent
 import voice.core.data.durationMs
 import voice.core.data.markForPosition
@@ -176,6 +177,8 @@ class BookPlayViewModel(
       skipSeconds = skipSeconds,
       jumpBack = lastJump?.let { jumpBackViewState(book, it, chapterNumber) },
       unavailable = book.id in unavailableBooks,
+      lyricsChapterId = book.currentChapter.id,
+      lyricsPositionMs = book.content.positionInChapter,
     )
   }
 
@@ -436,6 +439,14 @@ class BookPlayViewModel(
       val currentChapter = book.currentChapter
       val currentMark = currentChapter.markForPosition(book.content.positionInChapter)
       player.setPosition(currentMark.startMs + position.inWholeMilliseconds, currentChapter.id)
+    }
+  }
+
+  fun seekToLyrics(chapterId: ChapterId, positionMs: Long) {
+    scope.launch {
+      val book = currentBook() ?: return@launch
+      if (book.currentChapter.id != chapterId) return@launch
+      player.setPosition(positionMs.coerceIn(0L, book.currentChapter.duration), chapterId)
     }
   }
 

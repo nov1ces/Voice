@@ -375,6 +375,8 @@
     <string name="playback.chapters.title">Rozdziały</string>
     <string name="playback.jump_back">Wróć do %1$s</string>
     <string name="playback.jump_back.chapter">Wróć do rozdz. %1$d · %2$s</string>
+    <string name="playback.lyrics">Tekst</string>
+    <string name="playback.lyrics.follow">Śledź odtwarzanie</string>
     <string name="playback.option.skip_silence">Pomiń ciszę</string>
     <string name="playback.option.volume_boost">Wzmocnienie głośności</string>
     <string name="playback.speed.decrease">Wolniej</string>

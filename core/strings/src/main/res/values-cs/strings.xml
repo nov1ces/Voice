@@ -375,6 +375,8 @@
     <string name="playback.chapters.title">Kapitoly</string>
     <string name="playback.jump_back">Zpět na %1$s</string>
     <string name="playback.jump_back.chapter">Zpět na kap. %1$d · %2$s</string>
+    <string name="playback.lyrics">Text</string>
+    <string name="playback.lyrics.follow">Sledovat přehrávání</string>
     <string name="playback.option.skip_silence">Přeskočit ticho</string>
     <string name="playback.option.volume_boost">Zesílení hlasitosti</string>
     <string name="playback.speed.decrease">Pomaleji</string>

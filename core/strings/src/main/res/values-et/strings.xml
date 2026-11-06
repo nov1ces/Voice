@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">Peatükid</string>
     <string name="playback.jump_back">Tagasi: %1$s</string>
     <string name="playback.jump_back.chapter">Tagasi: ptk %1$d · %2$s</string>
+    <string name="playback.lyrics">Laulusõnad</string>
+    <string name="playback.lyrics.follow">Jälgi esitust</string>
     <string name="playback.option.skip_silence">Jäta vaikus vahele</string>
     <string name="playback.option.volume_boost">Helivõimendus</string>
     <string name="playback.speed.decrease">Aeglasemalt</string>

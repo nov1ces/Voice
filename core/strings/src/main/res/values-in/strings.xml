@@ -321,6 +321,8 @@
     <string name="playback.chapters.title">Bab</string>
     <string name="playback.jump_back">Kembali ke %1$s</string>
     <string name="playback.jump_back.chapter">Kembali ke Bab %1$d · %2$s</string>
+    <string name="playback.lyrics">Lirik</string>
+    <string name="playback.lyrics.follow">Ikuti pemutaran</string>
     <string name="playback.option.skip_silence">Lewati keheningan</string>
     <string name="playback.option.volume_boost">Peningkatan volume</string>
     <string name="playback.speed.decrease">Lebih lambat</string>

@@ -1,5 +1,6 @@
 package voice.features.playbackScreen.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -7,9 +8,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -19,11 +25,14 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import voice.core.data.BookId
+import voice.core.data.ChapterId
 import voice.core.ui.AuroraBackground
 import voice.core.ui.CoverTheme
 import voice.core.ui.VoiceTheme
 import voice.core.ui.rememberAnimationClock
 import voice.features.playbackScreen.BookPlayViewState
+import voice.features.playbackScreen.lyrics.LyricsDocument
+import voice.features.playbackScreen.lyrics.LyricsReader
 
 @Composable
 internal fun BookPlayView(
@@ -47,7 +56,20 @@ internal fun BookPlayView(
   onJumpBack: (id: Long) -> Unit,
   onJumpBackExpire: (id: Long) -> Unit,
   snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+  onLyricsSeek: (ChapterId, Long) -> Unit = { _, _ -> },
 ) {
+  val context = LocalContext.current
+  val chapterId = viewState.lyricsChapterId
+  val loaded by
+    produceState<Pair<ChapterId, LyricsDocument?>?>(null, bookId, chapterId, context) {
+      value = null
+      if (chapterId != null) value = chapterId to LyricsReader(context).read(bookId, chapterId)
+    }
+  val lyrics = loaded?.takeIf { it.first == chapterId }?.second
+  var lyricsOpen by remember(bookId, chapterId) { mutableStateOf(false) }
+  val showLyrics = lyricsOpen && lyrics != null
+  val toggleLyrics: (() -> Unit)? = if (lyrics != null) ({ lyricsOpen = !lyricsOpen }) else null
+  BackHandler(enabled = showLyrics) { lyricsOpen = false }
   val clock = rememberAnimationClock(running = viewState.playing)
   BoxWithConstraints(Modifier.fillMaxSize()) {
     // split screen panes are often wider than tall, but too narrow or too short for a cover next to
@@ -65,40 +87,56 @@ internal fun BookPlayView(
         SnackbarHost(hostState = snackbarHostState)
       },
       topBar = {
-        if (!sideBySide) {
+        if (!sideBySide || showLyrics) {
           PlaybackTopBar(
             showChapters = viewState.showPreviousNextButtons,
-            onCloseClick = onCloseClick,
+            onCloseClick = if (showLyrics) ({ lyricsOpen = false }) else onCloseClick,
             onChaptersClick = onCurrentChapterClick,
             onBookActionsClick = onBookActionsClick,
+            onLyricsClick = toggleLyrics,
           )
         }
       },
       content = { contentPadding ->
-        BookPlayContent(
-          contentPadding = contentPadding,
-          viewState = viewState,
-          bookId = bookId,
-          clock = { clock.value },
-          sideBySide = sideBySide,
-          onPlayClick = onPlayClick,
-          onRewindClick = onRewindClick,
-          onFastForwardClick = onFastForwardClick,
-          onSeek = onSeek,
-          onSkipToNext = onSkipToNext,
-          onSkipToPrevious = onSkipToPrevious,
-          onCurrentChapterClick = onCurrentChapterClick,
-          onSleepTimerClick = onSleepTimerClick,
-          onSpeedChangeClick = onSpeedChangeClick,
-          onBookmarkClick = onBookmarkClick,
-          onBookmarkLongClick = onBookmarkLongClick,
-          onSkipSilenceClick = onSkipSilenceClick,
-          onVolumeBoostClick = onVolumeBoostClick,
-          onCloseClick = onCloseClick,
-          onBookActionsClick = onBookActionsClick,
-          onJumpBack = onJumpBack,
-          onJumpBackExpire = onJumpBackExpire,
-        )
+        if (showLyrics && chapterId != null) {
+          LyricsContent(
+            lyrics = lyrics,
+            viewState = viewState,
+            bookId = bookId,
+            clock = { clock.value },
+            contentPadding = contentPadding,
+            onLineClick = { onLyricsSeek(chapterId, it) },
+            onSeek = onSeek,
+            onPlayClick = onPlayClick,
+            onRewindClick = onRewindClick,
+            onFastForwardClick = onFastForwardClick,
+          )
+        } else
+          BookPlayContent(
+            contentPadding = contentPadding,
+            viewState = viewState,
+            bookId = bookId,
+            clock = { clock.value },
+            sideBySide = sideBySide,
+            onPlayClick = onPlayClick,
+            onRewindClick = onRewindClick,
+            onFastForwardClick = onFastForwardClick,
+            onSeek = onSeek,
+            onSkipToNext = onSkipToNext,
+            onSkipToPrevious = onSkipToPrevious,
+            onCurrentChapterClick = onCurrentChapterClick,
+            onSleepTimerClick = onSleepTimerClick,
+            onSpeedChangeClick = onSpeedChangeClick,
+            onBookmarkClick = onBookmarkClick,
+            onBookmarkLongClick = onBookmarkLongClick,
+            onSkipSilenceClick = onSkipSilenceClick,
+            onVolumeBoostClick = onVolumeBoostClick,
+            onCloseClick = onCloseClick,
+            onBookActionsClick = onBookActionsClick,
+            onJumpBack = onJumpBack,
+            onJumpBackExpire = onJumpBackExpire,
+            onLyricsClick = toggleLyrics,
+          )
       },
     )
   }

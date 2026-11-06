@@ -339,6 +339,8 @@
     <string name="playback.chapters.title">अध्याय</string>
     <string name="playback.jump_back">%1$s पर वापस जाएँ</string>
     <string name="playback.jump_back.chapter">अध्याय %1$d · %2$s पर वापस जाएँ</string>
+    <string name="playback.lyrics">गीत के बोल</string>
+    <string name="playback.lyrics.follow">प्लेबैक का अनुसरण करें</string>
     <string name="playback.option.skip_silence">मौन भाग छोड़ें</string>
     <string name="playback.option.volume_boost">आवाज बढ़ाएँ</string>
     <string name="playback.speed.decrease">धीमा करें</string>
