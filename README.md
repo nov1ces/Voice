@@ -1,5 +1,6 @@
-# Voice 1.0.0-ffmpeg.1 release files
+# Voice FFmpeg release files
 
-This branch stores the signed APK and FFmpeg 6.1.6 source for this release.
-Run `sha256sum -c SHA256SUMS` to verify them.
-Voice source is in the release's source archives and commit 09dcd5e16e15d0dfc54471f11a7b0530317070ce.
+This branch stores signed APK files and FFmpeg 6.1.6 source.
+Use the checksum file for each release to verify its files.
+Voice 1.0.0-ffmpeg.2 source is at commit 003b87b0a9543b3445db56375ce29e6ba675b7c5.
+Earlier releases link to fixed commits.
