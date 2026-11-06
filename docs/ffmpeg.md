@@ -68,8 +68,7 @@ The `Fork release` workflow builds only the free variant.
 Set `GH_SIGNING_KEYSTORE` to a base64-encoded keystore in the repository secrets.
 Also set `GH_SIGNING_STORE_PASSWORD`, `GH_SIGNING_KEY_ALIAS`, and `GH_SIGNING_KEY_PASSWORD`.
 Keep the same key for future updates.
-Before the first dispatch, set `master` as the default branch or add the workflow to the default branch.
-Dispatch the workflow from `master` with a version name and an increasing version code.
+Dispatch the workflow from `main` with a version name and an increasing version code.
 It attaches the APK, checksums, and both source archives to the GitHub release.
 The fork key differs from the official app key. It cannot update the official app.
 Keep existing audiobook data before changing the installed app.
