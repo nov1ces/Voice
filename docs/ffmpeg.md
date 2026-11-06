@@ -1,7 +1,11 @@
 # FFmpeg audio decoding
 
-Voice uses the Media3 FFmpeg renderer before the Android codec renderer.
-AAC and ALAC audio in M4B files use FFmpeg when the decoder supports the stream.
+Voice uses the Media3 FFmpeg renderer by default.
+Choose a decoder in Settings → Listening → Audio decoding.
+FFmpeg uses software decoding. System decoding prefers hardware codecs and keeps system software codecs as fallbacks.
+Your choice is saved and applies during playback. Your position, speed, and play state stay the same.
+System decoding cannot play formats that the device does not support.
+With FFmpeg selected, AAC and ALAC audio in M4B files use software decoding when the decoder supports the stream.
 The Android codec renderer remains available for formats that FFmpeg does not support.
 Decoder fallback applies within the Android codec renderer. It does not recover from every FFmpeg error.
 Protected audio files are not supported by FFmpeg.

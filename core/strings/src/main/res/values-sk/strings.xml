@@ -445,6 +445,9 @@
     <string name="settings.playback.auto_rewind.title">Automaticky pretočiť dozadu</string>
     <string name="settings.playback.lock_screen_slider.summary">Posúvajte sa v kapitole z uzamknutej obrazovky a upozornenia. Vypnite ho, aby náhodný dotyk nepresunul prehrávanie inam.</string>
     <string name="settings.playback.lock_screen_slider.title">Posúvač na uzamknutej obrazovke</string>
+    <string name="settings.playback.audio_decoder.title">Dekódovanie zvuku</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (softvérové)</string>
+    <string name="settings.playback.audio_decoder.system">Systém (prednostne hardvérové)</string>
     <string name="settings.playback.seek_time.summary">Ako ďaleko skáče pretáčanie dozadu a dopredu</string>
     <string name="settings.playback.seek_time.title">Preskočiť o</string>
     <string name="settings.subtitle">Prispôsobte si Voice</string>

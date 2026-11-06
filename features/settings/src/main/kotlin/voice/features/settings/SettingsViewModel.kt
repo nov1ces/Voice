@@ -27,6 +27,8 @@ import voice.core.data.supporter.SupporterStatusStore
 import voice.core.documentfile.nameWithoutExtension
 import voice.core.kioskmode.KioskModeDemoData
 import voice.core.kioskmode.KioskModeFeatureFlag
+import voice.core.playback.AudioDecoderMode
+import voice.core.playback.AudioDecoderModeStore
 import voice.core.playback.AutoRewindAmountStore
 import voice.core.playback.LockScreenSliderStore
 import voice.core.playback.SeekTimeStore
@@ -54,6 +56,7 @@ class SettingsViewModel(
   private val autoRewindAmountStore: AutoRewindAmountStore,
   private val seekTimeStore: SeekTimeStore,
   private val lockScreenSliderStore: LockScreenSliderStore,
+  private val audioDecoderModeStore: AudioDecoderModeStore,
   private val navigator: Navigator,
   private val appInfoProvider: AppInfoProvider,
   private val gridModeStore: GridModeStore,
@@ -99,6 +102,11 @@ class SettingsViewModel(
     val seekTime = remember { seekTimeStore.data }.collectAsState(initial = null).value
     val lockScreenSlider = remember {
       lockScreenSliderStore.data
+    }
+      .collectAsState(initial = null)
+      .value
+    val audioDecoderMode = remember {
+      audioDecoderModeStore.data
     }
       .collectAsState(initial = null)
       .value
@@ -160,6 +168,7 @@ class SettingsViewModel(
         autoRewindAmount == null ||
         seekTime == null ||
         lockScreenSlider == null ||
+        audioDecoderMode == null ||
         gridMode == null ||
         autoSleepTimer == null ||
         analyticsEnabled == null ||
@@ -182,6 +191,7 @@ class SettingsViewModel(
       seekTimeInSeconds = seekTime,
       autoRewindInSeconds = autoRewindAmount,
       lockScreenSlider = lockScreenSlider,
+      audioDecoderMode = audioDecoderMode,
       appVersion = appInfoProvider.versionName,
       useGrid =
         when (gridMode) {
@@ -294,6 +304,12 @@ class SettingsViewModel(
   override fun autoRewindAmountStepped(step: Int) {
     mainScope.launch {
       autoRewindAmountStore.updateData { (it + step).coerceIn(AUTO_REWIND_RANGE) }
+    }
+  }
+
+  override fun setAudioDecoderMode(mode: AudioDecoderMode) {
+    mainScope.launch {
+      audioDecoderModeStore.updateData { mode }
     }
   }
 

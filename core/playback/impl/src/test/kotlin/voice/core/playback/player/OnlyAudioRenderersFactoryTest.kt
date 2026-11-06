@@ -2,22 +2,35 @@ package voice.core.playback.player
 
 import android.os.Handler
 import android.os.Looper
-import androidx.media3.decoder.ffmpeg.FfmpegAudioRenderer
 import androidx.media3.exoplayer.audio.MediaCodecAudioRenderer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.mockk.mockk
 import kotlin.test.Test
 import kotlin.test.assertIs
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
+import voice.core.playback.AudioDecoderMode
+import voice.core.playback.AudioDecoderModeStore
+import voice.core.playback.MemoryDataStore
 
 @RunWith(AndroidJUnit4::class)
 class OnlyAudioRenderersFactoryTest {
 
+  private val scope = TestScope()
+
   @Test
-  fun ffmpegPrecedesAndroidAudioDecoder() {
+  fun ffmpegPrecedesAndroidAudioDecoder() = scope.runTest {
+    val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+    val selector =
+      AudioDecoderTrackSelector(
+        context,
+        AudioDecoderModeStore(MemoryDataStore(AudioDecoderMode.Ffmpeg)),
+        backgroundScope,
+      )
     val renderers =
-      OnlyAudioRenderersFactory(ApplicationProvider.getApplicationContext())
+      OnlyAudioRenderersFactory(context, selector)
         .createRenderers(
           Handler(Looper.getMainLooper()),
           mockk(relaxed = true),
@@ -26,7 +39,7 @@ class OnlyAudioRenderersFactoryTest {
           mockk(relaxed = true),
         )
 
-    assertIs<FfmpegAudioRenderer>(renderers[0])
+    assertIs<FfmpegModeRenderer>(renderers[0])
     assertIs<MediaCodecAudioRenderer>(renderers[1])
   }
 }

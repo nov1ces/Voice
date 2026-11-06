@@ -1,6 +1,7 @@
 package voice.features.settings
 
 import java.time.LocalTime
+import voice.core.playback.AudioDecoderMode
 import voice.core.ui.ThemeColorScheme
 import voice.core.ui.ThemeMode
 
@@ -24,6 +25,8 @@ interface SettingsListener {
   fun autoRewindAmountChanged(seconds: Int)
 
   fun autoRewindAmountStepped(step: Int)
+
+  fun setAudioDecoderMode(mode: AudioDecoderMode)
 
   fun toggleLockScreenSlider()
 
@@ -75,6 +78,8 @@ interface SettingsListener {
         override fun autoRewindAmountChanged(seconds: Int) {}
 
         override fun autoRewindAmountStepped(step: Int) {}
+
+        override fun setAudioDecoderMode(mode: AudioDecoderMode) {}
 
         override fun toggleLockScreenSlider() {}
 

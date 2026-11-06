@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Αυτόματο γύρισμα πίσω</string>
     <string name="settings.playback.lock_screen_slider.summary">Σύρετε μέσα στο κεφάλαιο από την οθόνη κλειδώματος και την ειδοποίηση. Απενεργοποιήστε το για να μη χάνετε το σημείο σας από ένα τυχαίο άγγιγμα.</string>
     <string name="settings.playback.lock_screen_slider.title">Ρυθμιστικό οθόνης κλειδώματος</string>
+    <string name="settings.playback.audio_decoder.title">Αποκωδικοποίηση ήχου</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (λογισμικό)</string>
+    <string name="settings.playback.audio_decoder.system">Σύστημα (προτίμηση υλικού)</string>
     <string name="settings.playback.seek_time.summary">Πόσο μακριά πηγαίνουν η επαναφορά και η γρήγορη προώθηση</string>
     <string name="settings.playback.seek_time.title">Χρονική μετακίνηση</string>
     <string name="settings.subtitle">Κάντε το Voice δικό σας</string>

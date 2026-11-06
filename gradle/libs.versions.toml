@@ -49,6 +49,7 @@ billing = "com.android.billingclient:billing-ktx:9.1.0"
 clikt = "com.github.ajalt.clikt:clikt:5.1.0"
 jebml = "org.jitsi:jebml:2.4.4-6-gb310849"
 slf4j-noop = "org.slf4j:slf4j-nop:2.0.20"
+checker-qual = "org.checkerframework:checker-qual:3.49.5"
 
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-guava = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-guava", version.ref = "coroutines" }
@@ -68,6 +69,7 @@ room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
 
 androidX-test-junit = "androidx.test.ext:junit:1.3.0"
 androidX-test-core = "androidx.test:core-ktx:1.7.0"
+androidX-test-runner = "androidx.test:runner:1.7.0"
 
 media3-decoder = { module = "androidx.media3:media3-decoder", version.ref = "media3" }
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }

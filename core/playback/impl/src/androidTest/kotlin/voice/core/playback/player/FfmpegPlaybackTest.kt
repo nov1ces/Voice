@@ -1,5 +1,6 @@
 package voice.core.playback.player
 
+import androidx.datastore.core.DataStore
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -11,10 +12,18 @@ import androidx.test.platform.app.InstrumentationRegistry
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import voice.core.playback.AudioDecoderMode
+import voice.core.playback.AudioDecoderModeStore
 
 @RunWith(AndroidJUnit4::class)
 class FfmpegPlaybackTest {
@@ -29,10 +38,26 @@ class FfmpegPlaybackTest {
     val finished = CountDownLatch(1)
     val decoderName = AtomicReference<String>()
     val failure = AtomicReference<PlaybackException>()
+    val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
     lateinit var player: ExoPlayer
     instrumentation.runOnMainSync {
       val context = instrumentation.context
-      player = ExoPlayer.Builder(context, OnlyAudioRenderersFactory(context)).build()
+      val mode = MutableStateFlow(AudioDecoderMode.Ffmpeg)
+      val store =
+        object : DataStore<AudioDecoderMode> {
+          override val data: Flow<AudioDecoderMode> = mode
+
+          override suspend fun updateData(
+            transform: suspend (AudioDecoderMode) -> AudioDecoderMode,
+          ): AudioDecoderMode {
+            return transform(mode.value).also { mode.value = it }
+          }
+        }
+      val selector = AudioDecoderTrackSelector(context, AudioDecoderModeStore(store), scope)
+      player =
+        ExoPlayer.Builder(context, OnlyAudioRenderersFactory(context, selector))
+          .setTrackSelector(selector)
+          .build()
       player.addAnalyticsListener(
         object : AnalyticsListener {
           override fun onAudioDecoderInitialized(
@@ -68,6 +93,7 @@ class FfmpegPlaybackTest {
       assertTrue("Unexpected decoder: $name", name.startsWith("ffmpeg") && name.endsWith("-$codec"))
     } finally {
       instrumentation.runOnMainSync { player.release() }
+      scope.cancel()
     }
   }
 }

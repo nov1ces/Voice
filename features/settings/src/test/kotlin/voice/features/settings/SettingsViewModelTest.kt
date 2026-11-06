@@ -47,6 +47,8 @@ import voice.core.documentfile.CachedDocumentFile
 import voice.core.featureflag.MemoryFeatureFlag
 import voice.core.kioskmode.KioskModeDemoData
 import voice.core.kioskmode.KioskModeFeatureFlag
+import voice.core.playback.AudioDecoderMode
+import voice.core.playback.AudioDecoderModeStore
 import voice.core.playback.AutoRewindAmountStore
 import voice.core.playback.LockScreenSliderStore
 import voice.core.playback.SeekTimeStore
@@ -75,6 +77,7 @@ class SettingsViewModelTest {
   private val autoRewindAmountStore = MemoryDataStore(10)
   private val seekTimeStore = MemoryDataStore(30)
   private val lockScreenSliderStore = MemoryDataStore(true)
+  private val audioDecoderModeStore = MemoryDataStore(AudioDecoderMode.Ffmpeg)
   private val gridModeStore = MemoryDataStore(GridMode.GRID)
   private val sleepTimerPreferenceStore = MemoryDataStore(SleepTimerPreference.Default)
   private val analyticsConsentStore = MemoryDataStore(false)
@@ -121,6 +124,7 @@ class SettingsViewModelTest {
       autoRewindAmountStore = AutoRewindAmountStore(autoRewindAmountStore),
       seekTimeStore = SeekTimeStore(seekTimeStore),
       lockScreenSliderStore = LockScreenSliderStore(lockScreenSliderStore),
+      audioDecoderModeStore = AudioDecoderModeStore(audioDecoderModeStore),
       navigator = navigator,
       appInfoProvider = appInfoProvider,
       gridModeStore = GridModeStore(gridModeStore),
@@ -173,6 +177,23 @@ class SettingsViewModelTest {
 
         viewModel.setThemeMode(ThemeMode.FollowSystem)
         assertEquals(expected = ThemeMode.FollowSystem, actual = awaitItem().themeMode)
+      }
+  }
+
+  @Test
+  fun `decoder choice is saved and updates the settings view state`() = scope.runTest {
+    backgroundScope
+      .launchMolecule(RecompositionMode.Immediate) { viewModel.viewState() }
+      .filterNotNull()
+      .test {
+        assertEquals(AudioDecoderMode.Ffmpeg, awaitItem().audioDecoderMode)
+
+        viewModel.setAudioDecoderMode(AudioDecoderMode.System)
+        assertEquals(AudioDecoderMode.System, awaitItem().audioDecoderMode)
+        assertEquals(AudioDecoderMode.System, audioDecoderModeStore.data.first())
+
+        viewModel.setAudioDecoderMode(AudioDecoderMode.Ffmpeg)
+        assertEquals(AudioDecoderMode.Ffmpeg, awaitItem().audioDecoderMode)
       }
   }
 

@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">ऑटो रिवाइंड</string>
     <string name="settings.playback.lock_screen_slider.summary">लॉक स्क्रीन और सूचना से खींचकर अध्याय में आगे-पीछे जाएँ। बंद करने पर गलती से छूने से आपकी जगह नहीं खोएगी।</string>
     <string name="settings.playback.lock_screen_slider.title">लॉक स्क्रीन स्लाइडर</string>
+    <string name="settings.playback.audio_decoder.title">ऑडियो डिकोडिंग</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (सॉफ़्टवेयर)</string>
+    <string name="settings.playback.audio_decoder.system">सिस्टम (हार्डवेयर को प्राथमिकता)</string>
     <string name="settings.playback.seek_time.summary">रिवाइंड और फ़ास्ट फ़ॉरवर्ड कितनी दूर जाते हैं</string>
     <string name="settings.playback.seek_time.title">जंप की अवधि</string>
     <string name="settings.subtitle">Voice को अपना बनाएँ</string>

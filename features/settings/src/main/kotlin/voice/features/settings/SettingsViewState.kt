@@ -3,6 +3,7 @@ package voice.features.settings
 import java.time.LocalTime
 import java.time.YearMonth
 import voice.core.data.supporter.SupporterBadge
+import voice.core.playback.AudioDecoderMode
 import voice.core.ui.ThemeColorScheme
 import voice.core.ui.ThemeMode
 
@@ -15,6 +16,7 @@ data class SettingsViewState(
   val seekTimeInSeconds: Int,
   val autoRewindInSeconds: Int,
   val lockScreenSlider: Boolean,
+  val audioDecoderMode: AudioDecoderMode,
   val appVersion: String,
   val useGrid: Boolean,
   val autoSleepTimer: AutoSleepTimerViewState,
@@ -42,6 +44,7 @@ data class SettingsViewState(
         seekTimeInSeconds = 20,
         autoRewindInSeconds = 2,
         lockScreenSlider = true,
+        audioDecoderMode = AudioDecoderMode.Ffmpeg,
         appVersion = "1.2.3",
         useGrid = true,
         autoSleepTimer = AutoSleepTimerViewState.preview(),

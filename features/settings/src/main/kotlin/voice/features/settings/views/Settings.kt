@@ -192,6 +192,8 @@ private fun LazyListScope.sections(
       onAutoRewindChange = listener::autoRewindAmountChanged,
       onAutoRewindStep = listener::autoRewindAmountStepped,
       lockScreenSlider = viewState.lockScreenSlider,
+      audioDecoderMode = viewState.audioDecoderMode,
+      onAudioDecoderModeSelect = listener::setAudioDecoderMode,
       onLockScreenSliderToggle = listener::toggleLockScreenSlider,
     )
   }

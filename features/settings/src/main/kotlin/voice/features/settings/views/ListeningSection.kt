@@ -79,6 +79,7 @@ import androidx.compose.ui.unit.sp
 import java.text.NumberFormat
 import kotlin.math.PI
 import kotlin.math.sin
+import voice.core.playback.AudioDecoderMode
 import voice.core.strings.R as StringsR
 import voice.core.ui.ShapedIcon
 import voice.core.ui.icons.VoiceIcons
@@ -98,6 +99,8 @@ internal fun ListeningSection(
   onAutoRewindChange: (Int) -> Unit,
   onAutoRewindStep: (Int) -> Unit,
   lockScreenSlider: Boolean,
+  audioDecoderMode: AudioDecoderMode,
+  onAudioDecoderModeSelect: (AudioDecoderMode) -> Unit,
   onLockScreenSliderToggle: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -129,6 +132,8 @@ internal fun ListeningSection(
         RewindIllustration(autoRewindInSeconds, maxSeconds = AUTO_REWIND_RANGE.last)
       },
     )
+    Spacer(Modifier.height(20.dp))
+    AudioDecoderSetting(mode = audioDecoderMode, onSelect = onAudioDecoderModeSelect)
     Spacer(Modifier.height(20.dp))
     IslandSwitchRow(
       title = stringResource(StringsR.string.settings_playback_lock_screen_slider_title),

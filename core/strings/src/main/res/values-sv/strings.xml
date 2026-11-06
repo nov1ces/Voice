@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Automatisk bakåtspolning</string>
     <string name="settings.playback.lock_screen_slider.summary">Spola genom kapitlet från låsskärmen och aviseringen. Stäng av det, så att en oavsiktlig beröring inte får dig att tappa bort var du var.</string>
     <string name="settings.playback.lock_screen_slider.title">Reglage på låsskärmen</string>
+    <string name="settings.playback.audio_decoder.title">Ljudavkodning</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (programvara)</string>
+    <string name="settings.playback.audio_decoder.system">System (föredrar maskinvara)</string>
     <string name="settings.playback.seek_time.summary">Hur långt bakåt- och framåtspolning hoppar</string>
     <string name="settings.playback.seek_time.title">Hopplängd</string>
     <string name="settings.subtitle">Gör Voice till ditt eget</string>

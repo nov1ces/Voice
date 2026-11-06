@@ -426,6 +426,9 @@
     <string name="settings.playback.auto_rewind.title">הרצה אחורה אוטומטית</string>
     <string name="settings.playback.lock_screen_slider.summary">אפשר לנוע בפרק ממסך הנעילה ומההתראה. כבו את האפשרות כדי שנגיעה בטעות לא תזיז אתכם מהמקום שבו הייתם.</string>
     <string name="settings.playback.lock_screen_slider.title">פס ההתקדמות במסך הנעילה</string>
+    <string name="settings.playback.audio_decoder.title">פענוח שמע</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (תוכנה)</string>
+    <string name="settings.playback.audio_decoder.system">מערכת (עדיפות לחומרה)</string>
     <string name="settings.playback.seek_time.summary">כמה רחוק מדלגים בהרצה אחורה וקדימה</string>
     <string name="settings.playback.seek_time.title">משך הדילוג</string>
     <string name="settings.subtitle">הפכו את Voice לשלכם</string>

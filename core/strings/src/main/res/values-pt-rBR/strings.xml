@@ -426,6 +426,9 @@
     <string name="settings.playback.auto_rewind.title">Retrocesso automático</string>
     <string name="settings.playback.lock_screen_slider.summary">Avance ou volte no capítulo pela tela de bloqueio e pela notificação. Desative para que um toque sem querer não faça você perder onde parou.</string>
     <string name="settings.playback.lock_screen_slider.title">Barra na tela de bloqueio</string>
+    <string name="settings.playback.audio_decoder.title">Decodificação de áudio</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (software)</string>
+    <string name="settings.playback.audio_decoder.system">Sistema (preferir hardware)</string>
     <string name="settings.playback.seek_time.summary">Quanto tempo pular ao retroceder e avançar</string>
     <string name="settings.playback.seek_time.title">Duração do pulo</string>
     <string name="settings.subtitle">Deixe o Voice do seu jeito</string>

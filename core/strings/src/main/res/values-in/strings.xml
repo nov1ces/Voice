@@ -388,6 +388,9 @@
     <string name="settings.playback.auto_rewind.title">Mundur otomatis</string>
     <string name="settings.playback.lock_screen_slider.summary">Geser maju-mundur dalam bab dari layar kunci dan notifikasi. Matikan agar sentuhan tak sengaja tidak membuat Anda kehilangan posisi terakhir.</string>
     <string name="settings.playback.lock_screen_slider.title">Penggeser di layar kunci</string>
+    <string name="settings.playback.audio_decoder.title">Dekode audio</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (perangkat lunak)</string>
+    <string name="settings.playback.audio_decoder.system">Sistem (utamakan perangkat keras)</string>
     <string name="settings.playback.seek_time.summary">Seberapa jauh mundur dan maju cepat melompat</string>
     <string name="settings.playback.seek_time.title">Durasi lompatan</string>
     <string name="settings.subtitle">Jadikan Voice milik Anda</string>

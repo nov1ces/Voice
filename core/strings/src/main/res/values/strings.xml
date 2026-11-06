@@ -713,6 +713,12 @@
     <string name="settings.playback.lock_screen_slider.summary">Drag through the chapter from the lock screen and notification. Turn it off so a stray touch can\'t lose your place.</string>
     <!-- Title for the setting that lets the listener drag the progress slider in the media notification and on the lock screen. -->
     <string name="settings.playback.lock_screen_slider.title">Lock screen slider</string>
+    <!-- Heading for the audio decoder choice in Listening settings. -->
+    <string name="settings.playback.audio_decoder.title">Audio decoding</string>
+    <!-- Audio decoder option. FFmpeg decodes audio in software on the CPU. Keep the name FFmpeg. -->
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (software)</string>
+    <!-- Audio decoder option. Android system codecs prefer hardware when available and can fall back to software. -->
+    <string name="settings.playback.audio_decoder.system">System (hardware preferred)</string>
     <!-- Explains the skip amount setting. -->
     <string name="settings.playback.seek_time.summary">How far rewind and fast forward jump</string>
     <!-- Title for the setting that controls skip-forward and rewind duration. -->

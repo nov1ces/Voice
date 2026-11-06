@@ -426,6 +426,9 @@
     <string name="settings.playback.auto_rewind.title">Rembobinage automatique</string>
     <string name="settings.playback.lock_screen_slider.summary">Parcourez le chapitre depuis l\'écran de verrouillage et la notification. Désactivez-le pour qu\'un effleurement accidentel ne vous éloigne pas de là où vous en étiez.</string>
     <string name="settings.playback.lock_screen_slider.title">Curseur sur l\'écran de verrouillage</string>
+    <string name="settings.playback.audio_decoder.title">Décodage audio</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (logiciel)</string>
+    <string name="settings.playback.audio_decoder.system">Système (priorité au matériel)</string>
     <string name="settings.playback.seek_time.summary">De combien le retour et l\'avance rapide sautent</string>
     <string name="settings.playback.seek_time.title">Durée du saut</string>
     <string name="settings.subtitle">Faites de Voice le vôtre</string>

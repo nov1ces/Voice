@@ -29,6 +29,7 @@ import voice.core.playback.history.AutomaticPauseRecorder
 import voice.core.playback.history.CommandSourceResolver
 import voice.core.playback.misc.VolumeGain
 import voice.core.playback.notification.MainActivityIntentProvider
+import voice.core.playback.player.AudioDecoderTrackSelector
 import voice.core.playback.player.DurationInconsistenciesUpdater
 import voice.core.playback.player.OnlyAudioRenderersFactory
 import voice.core.playback.player.VoicePlayer
@@ -62,6 +63,7 @@ object PlaybackModule {
   fun player(
     context: Context,
     onlyAudioRenderersFactory: OnlyAudioRenderersFactory,
+    audioDecoderTrackSelector: AudioDecoderTrackSelector,
     mediaSourceFactory: MediaSource.Factory,
     playStateDelegatingListener: PlayStateDelegatingListener,
     positionUpdater: PositionUpdater,
@@ -78,6 +80,7 @@ object PlaybackModule {
         .build()
 
     return ExoPlayer.Builder(context, onlyAudioRenderersFactory, mediaSourceFactory)
+      .setTrackSelector(audioDecoderTrackSelector)
       .setAudioAttributes(audioAttributes, true)
       .setHandleAudioBecomingNoisy(true)
       .setWakeMode(C.WAKE_MODE_LOCAL)

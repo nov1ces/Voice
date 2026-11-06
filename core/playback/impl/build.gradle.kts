@@ -26,7 +26,7 @@ dependencies {
   implementation(libs.media3.session)
 
   androidTestImplementation(libs.androidX.test.junit)
-  androidTestImplementation("androidx.test:runner:1.7.0")
+  androidTestImplementation(libs.androidX.test.runner)
 
   testImplementation(libs.media3.testUtils.core)
   testImplementation(libs.media3.testUtils.robolectric)

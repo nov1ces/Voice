@@ -388,6 +388,9 @@
     <string name="settings.playback.auto_rewind.title">自動倒轉</string>
     <string name="settings.playback.lock_screen_slider.summary">可在鎖定畫面和通知中拖曳進度列，在章節內跳轉。關閉後，就不怕誤觸讓進度跑掉。</string>
     <string name="settings.playback.lock_screen_slider.title">鎖定畫面進度列</string>
+    <string name="settings.playback.audio_decoder.title">音訊解碼</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg（軟體解碼）</string>
+    <string name="settings.playback.audio_decoder.system">系統解碼（硬體優先）</string>
     <string name="settings.playback.seek_time.summary">倒轉和快轉一次跳多遠</string>
     <string name="settings.playback.seek_time.title">跳轉秒數</string>
     <string name="settings.subtitle">打造屬於你的 Voice</string>

@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Automatisk tilbagespoling</string>
     <string name="settings.playback.lock_screen_slider.summary">Spol gennem kapitlet fra låseskærmen og notifikationen. Slå den fra, så du ikke kommer til at spole ved et uheld.</string>
     <string name="settings.playback.lock_screen_slider.title">Skyder på låseskærmen</string>
+    <string name="settings.playback.audio_decoder.title">Lydafkodning</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (software)</string>
+    <string name="settings.playback.audio_decoder.system">System (hardware foretrækkes)</string>
     <string name="settings.playback.seek_time.summary">Hvor langt der springes tilbage og frem</string>
     <string name="settings.playback.seek_time.title">Springinterval</string>
     <string name="settings.subtitle">Gør Voice til din egen</string>

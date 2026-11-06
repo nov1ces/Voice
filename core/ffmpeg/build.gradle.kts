@@ -29,5 +29,5 @@ android {
 dependencies {
   api(libs.media3.decoder)
   implementation(libs.media3.exoplayer)
-  compileOnly("org.checkerframework:checker-qual:3.49.5")
+  compileOnly(libs.checker.qual)
 }

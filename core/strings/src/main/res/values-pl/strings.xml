@@ -445,6 +445,9 @@
     <string name="settings.playback.auto_rewind.title">Automatyczne cofnięcie</string>
     <string name="settings.playback.lock_screen_slider.summary">Przewijaj rozdział z ekranu blokady i powiadomienia. Wyłącz go, żeby przypadkowy dotyk nie przesunął odtwarzania w inne miejsce.</string>
     <string name="settings.playback.lock_screen_slider.title">Suwak na ekranie blokady</string>
+    <string name="settings.playback.audio_decoder.title">Dekodowanie dźwięku</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (programowe)</string>
+    <string name="settings.playback.audio_decoder.system">System (preferuj sprzętowe)</string>
     <string name="settings.playback.seek_time.summary">O ile przewijają przyciski do tyłu i do przodu</string>
     <string name="settings.playback.seek_time.title">Przewiń o</string>
     <string name="settings.subtitle">Voice na twoją modłę</string>

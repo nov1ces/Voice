@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Otomatik geri sarma</string>
     <string name="settings.playback.lock_screen_slider.summary">Kilit ekranından ve bildirimden bölüm içinde ileri geri gidebilirsiniz. Yanlışlıkla bir dokunuşla yerinizi kaybetmemek için kapatın.</string>
     <string name="settings.playback.lock_screen_slider.title">Kilit ekranı kaydırıcısı</string>
+    <string name="settings.playback.audio_decoder.title">Ses kod çözme</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (yazılım)</string>
+    <string name="settings.playback.audio_decoder.system">Sistem (donanım öncelikli)</string>
     <string name="settings.playback.seek_time.summary">Geri ve ileri sarmanın ne kadar atlayacağı</string>
     <string name="settings.playback.seek_time.title">Atlama süresi</string>
     <string name="settings.subtitle">Voice\'u kendinize göre ayarlayın</string>

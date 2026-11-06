@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Torra in segus in automàticu</string>
     <string name="settings.playback.lock_screen_slider.summary">Trìsina in su capìtulu dae s\'ischermu de blocu e dae sa notìfica. Disativa·lu pro chi unu tocu pro isbàlliu non ti fatzat pèrdere in ue fias.</string>
     <string name="settings.playback.lock_screen_slider.title">Cursore in s\'ischermu de blocu</string>
+    <string name="settings.playback.audio_decoder.title">Decodìfica de s’àudio</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (software)</string>
+    <string name="settings.playback.audio_decoder.system">Sistema (hardware de preferèntzia)</string>
     <string name="settings.playback.seek_time.summary">Cantu brincant su torrare in segus e s\'andare a in antis</string>
     <string name="settings.playback.seek_time.title">Tempus de brincare</string>
     <string name="settings.subtitle">Cunfigura Voice a gèniu tuo</string>

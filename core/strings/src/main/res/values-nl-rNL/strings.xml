@@ -407,6 +407,9 @@
     <string name="settings.playback.auto_rewind.title">Automatisch terugspoelen</string>
     <string name="settings.playback.lock_screen_slider.summary">Spoel door het hoofdstuk vanaf het vergrendelscherm en de melding. Zet hem uit, zodat je door een onbedoelde aanraking niet je plek kwijtraakt.</string>
     <string name="settings.playback.lock_screen_slider.title">Schuifbalk op het vergrendelscherm</string>
+    <string name="settings.playback.audio_decoder.title">Audiodecodering</string>
+    <string name="settings.playback.audio_decoder.ffmpeg">FFmpeg (software)</string>
+    <string name="settings.playback.audio_decoder.system">Systeem (voorkeur voor hardware)</string>
     <string name="settings.playback.seek_time.summary">Hoe ver terugspoelen en vooruitspoelen springen</string>
     <string name="settings.playback.seek_time.title">Spoelafstand</string>
     <string name="settings.subtitle">Maak Voice helemaal van jou</string>
